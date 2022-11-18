@@ -1,0 +1,16 @@
+.header__navigation {
+    display: flex;
+
+    &_item {
+        &:last-child {
+            margin-left: auto;
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+
+            height: 100%;
+        }
+    }
+}

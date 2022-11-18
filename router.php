@@ -24,6 +24,9 @@ switch ($URI) {
     case '/project/create':
         $path_page .= '/project/create.php';
         break;
+    case '/project/my':
+        $path_page .= '/project/my.php';
+        break;
     case '/profile':
         $path_page .= '/profile/profile.php';
         break;
@@ -55,7 +58,7 @@ if (SessionUser::check()) {
 
     foreach ($no_auth_uri as $uri) {
         if ($uri !== $URI) continue;
-        
+
         $redirect = false;
         break;
     }
