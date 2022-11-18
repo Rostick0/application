@@ -40,12 +40,12 @@ $no_auth_uri = [
 ];
 
 if (SessionUser::check()) {
-    $redirect = true;
+    $redirect = false;
 
     foreach ($no_auth_uri as $uri) {
-        if ($uri === $URI) continue;
+        if ($uri !== $URI) continue;
 
-        $redirect = false;
+        $redirect = true;
         break;
     }
 
