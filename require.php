@@ -9,6 +9,7 @@ require_once './global/vars.php';
 require_once './global/functions.php';
 require_once './global/db_query.php';
 require_once './global/html_dom.php';
+require_once './global/date_editor.php';
 
 require_once './model/authorization.php';
 require_once './controller/authorization.php';

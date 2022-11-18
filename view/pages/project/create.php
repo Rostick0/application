@@ -3,16 +3,25 @@
 $status_delivery = DbQuery::get('status_delivery');
 $status_payment = DbQuery::get('status_payment');
 
-// $name = $_REQUEST['user_name'];
-// $email = $_REQUEST['user_email'];
-// $password = $_REQUEST['user_password'];
-// $about = $_REQUEST['user_about'];
+$name = $_REQUEST['project_name'];
+$address = $_REQUEST['project_address'];
+$inn = $_REQUEST['project_inn'];
+$count = $_REQUEST['project_count'];
+$count_defective = $_REQUEST['project_count_defective'];
+$start_date = $_REQUEST['project_start_date'];
+$end_date = $_REQUEST['project_end_date'];
+$price = $_REQUEST['project_price'];
+$price_commission = $_REQUEST['project_price_commission'];
+$comment = $_REQUEST['project_comment'];
+$complaint = $_REQUEST['project_complaint'];
+$status_payment_id = $_REQUEST['status_payment_id'];
+$status_delivery_id = $_REQUEST['status_delivery_id'];
 
-// $button_reg = $_REQUEST['button_reg'];
+$button_create = $_REQUEST['button_create'];
 
-// if (isset($button_reg)) {
-//     $error = UserController::registration($name, $email, $password, $about);
-// }
+if (isset($button_create)) {
+    // $error = ProjectController::create($name, $address, $inn, $start_date, $end_date, $count, $count_defective, $price, $price_commission, $comment, $complaint, $is_ready, $status_payment_id, $status_delivery_id);
+}
 
 ?>
 
@@ -52,18 +61,42 @@ $status_payment = DbQuery::get('status_payment');
                         <input class="validate" id="project_inn" type="number" name="project_inn">
                         <label for="project_inn">ИНН*</label>
                     </div>
-                    <div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="project_count" type="number" name="project_count">
+                        <label for="project_count">Количество товара*</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="project_count_defective" type="number" name="project_count_defective">
+                        <label for="project_count_defective">Количество брака*</label>
+                    </div>
+                    <div class="project__dates">
                         <div class="input-field col s12">
-                            <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date">
+                            <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" readonly>
                             <label for="project_start_date">Дата начала*</label>
                         </div>
                         <div class="input-field col s12">
-                            <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date">
+                            <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" readonly>
                             <label for="project_end_date">Дата окончания*</label>
                         </div>
                     </div>
                     <div class="input-field col s12">
-                        <select>
+                        <input class="validate" id="project_price" type="number" name="project_price">
+                        <label for="project_price">Цена*</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="project_price_commission" type="number" name="project_price_commission">
+                        <label for="project_price_commission">Цена с комиссей*</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <textarea class="materialize-textarea" id="project_comment" name="project_comment"></textarea>
+                        <label for="project_comment">Комментарий</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <textarea class="materialize-textarea" id="project_complaint" name="project_complaint"></textarea>
+                        <label for="project_complaint">Замечания</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <select name="status_delivery_id">
                             <? foreach ($status_delivery as $value) : ?>
                                 <option value="<?= $value['status_delivery_id'] ?>"><?= $value['name'] ?></option>
                             <? endforeach; ?>
@@ -71,12 +104,17 @@ $status_payment = DbQuery::get('status_payment');
                         <label>Статус доставки</label>
                     </div>
                     <div class="input-field col s12">
-                        <select>
+                        <select name="status_payment_id">
                             <? foreach ($status_payment as $value) : ?>
                                 <option value="<?= $value['status_payment_id'] ?>"><?= $value['name'] ?></option>
                             <? endforeach; ?>
                         </select>
                         <label>Статус оплаты</label>
+                    </div>
+                    <div class="project__button">
+                        <button class="waves-effect waves-light btn-large blue darken-1" name="button_create">
+                            Создать
+                        </button>
                     </div>
                 </form>
             </div>
