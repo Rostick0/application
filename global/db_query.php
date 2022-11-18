@@ -10,10 +10,10 @@ class DbQuery {
     }
 
     public static function get($table, $column = null, $value = null, $limit = null, $offset = null) {
-        global $db;
+        global $db_connect;
     
         if (!$value && !$column) {
-            return $db->query("SELECT * FROM `$table`");
+            return $db_connect->query("SELECT * FROM `$table`");
         }
     
         $limitAndOffset = null;
@@ -26,7 +26,7 @@ class DbQuery {
             }
         }
     
-        return $db->query("SELECT * FROM `$table` WHERE `$column` = '$value' $limitAndOffset");
+        return $db_connect->query("SELECT * FROM `$table` WHERE `$column` = '$value' $limitAndOffset");
     }
 
     public static function parse($table, $column = null, $value = null, $name = 'name') {

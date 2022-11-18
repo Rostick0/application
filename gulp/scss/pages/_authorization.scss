@@ -1,0 +1,19 @@
+.authorization {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 100%;
+
+    &__bottom {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+    }
+
+    &__buttons {
+        display: flex;
+        align-items: center;
+        column-gap: 8px;
+    }
+}

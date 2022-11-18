@@ -17,19 +17,19 @@ function scss() {
         .pipe(dest('view/static/css'))
 }
 
-function js() {
-    return src([''])
-        .pipe(babel({
-            presets: ['@babel/env']
-        }))
-        .pipe(uglify())
-        .pipe(concat('all.js'))
-        .pipe(dest('view/static/js'))
-}
+// function js() {
+//     return src([''])
+//         .pipe(babel({
+//             presets: ['@babel/env']
+//         }))
+//         .pipe(uglify())
+//         .pipe(concat('all.js'))
+//         .pipe(dest('view/static/js'))
+// }
 
 function serve() {
     watch('gulp/scss/**', series(scss)).on('change', reload);
-    watch('gulp/js/**', series(js)).on('change', reload);
+    // watch('gulp/js/**', series(js)).on('change', reload);
 }
 
-exports.serve = series(scss, js, serve);
+exports.serve = series(scss, serve);
