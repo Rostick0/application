@@ -26,11 +26,17 @@ class UserController {
         $token = md5(random_int(1000, 9999) . time());
 
         AuthorizationController::create($token, $user_id);
+
+        $user = DbQuery::get('user', 'user_id', $user_id)->fetch_assoc();
+
+        SessionUser::create($user);
     }
 
     public static function log($email, $password) {
         $email =  DbQuery::protectedData($email);
         $password =  DbQuery::protectedData($password);
+
+        if (!$email || !$password) return "Введите данные";
 
         $user = DbQuery::get('user', 'email', $email)->fetch_assoc();
         $password_hash = null;
@@ -44,6 +50,8 @@ class UserController {
         $token = md5(random_int(1000, 9999) . time());
 
         AuthorizationController::create($token, $user['user_id']);
+
+        SessionUser::create($user);
     }
 }
 

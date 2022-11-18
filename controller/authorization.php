@@ -20,12 +20,14 @@ class AuthorizationController {
 
         $user_id = $data['user_id'];
 
-        $user = DbQuery::get('user', 'user_id', $user_id);
+        $user = DbQuery::get('user', 'user_id', $user_id)->fetch_assoc();
 
         if (!$user) return;
 
-        $_SESSION['user'] = $user;
+        SessionUser::create($user);
     }
 }
+
+if (!SessionUser::check() && $_COOKIE['session_token']) AuthorizationController::check($_COOKIE['session_token']);
 
 ?>

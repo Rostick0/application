@@ -1,6 +1,7 @@
 <?
 
 require_once './controller/session.php';
+require_once './controller/session_user.php';
 
 require_once './include/connect.php';
 

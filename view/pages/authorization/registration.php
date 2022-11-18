@@ -11,10 +11,6 @@ if (isset($button_reg)) {
     $error = UserController::registration($name, $email, $password, $about);
 }
 
-var_dump($error);
-
-var_dump($_SESSION);
-
 ?>
 
 <!DOCTYPE html>
@@ -33,29 +29,24 @@ var_dump($_SESSION);
         <div class="authorization">
             <div class="container">
                 <form class="col s12" method="POST">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input class="validate" id="user_name" type="text" name="user_name">
-                            <label for="user_name">Ваше имя*</label>
-                        </div>
+                    <p class="red-text text-darken-1">
+                        <?= $error ?>
+                    </p>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_name" type="text" name="user_name">
+                        <label for="user_name">Ваше имя*</label>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input class="validate" id="user_email" type="email" name="user_email">
-                            <label for="user_email">Email*</label>
-                        </div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_email" type="email" name="user_email">
+                        <label for="user_email">Email*</label>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input class="validate" id="user_password" type="password" name="user_password">
-                            <label for="user_password">Пароль*</label>
-                        </div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_password" type="password" name="user_password">
+                        <label for="user_password">Пароль*</label>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <textarea id="user_about" class="materialize-textarea" name="user_about"></textarea>
-                            <label for="user_about">О себе</label>
-                        </div>
+                    <div class="input-field col s12">
+                        <textarea id="user_about" class="materialize-textarea" name="user_about"></textarea>
+                        <label for="user_about">О себе</label>
                     </div>
                     <div class="authorization__bottom">
                         <strong class="grey-text text-darken-2">

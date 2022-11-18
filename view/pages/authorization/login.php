@@ -9,8 +9,6 @@ if (isset($button_log)) {
     $error = UserController::log($email, $password);
 }
 
-var_dump($error);
-
 ?>
 
 <!DOCTYPE html>
@@ -29,17 +27,16 @@ var_dump($error);
         <div class="authorization">
             <div class="container">
                 <form class="col s12" method="POST">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input class="validate" id="user_email" type="email" name="user_email">
-                            <label for="user_email">Email</label>
-                        </div>
+                    <p class="red-text text-darken-1">
+                        <?= $error ?>
+                    </p>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_email" type="email" name="user_email">
+                        <label for="user_email">Email</label>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input class="validate" id="user_password" type="password" name="user_password">
-                            <label for="user_password">Пароль</label>
-                        </div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_password" type="password" name="user_password">
+                        <label for="user_password">Пароль</label>
                     </div>
                     <div class="authorization__buttons">
                         <button class="waves-effect waves-light btn-large blue darken-1" name="button_log">
