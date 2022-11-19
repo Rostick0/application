@@ -20,7 +20,7 @@ $status_delivery_id = $_REQUEST['status_delivery_id'];
 $button_create = $_REQUEST['button_create'];
 
 if (isset($button_create)) {
-    // $error = ProjectController::create($name, $address, $inn, $start_date, $end_date, $count, $count_defective, $price, $price_commission, $comment, $complaint, $is_ready, $status_payment_id, $status_delivery_id);
+    $error = ProjectController::create($name, $address, $inn, $start_date, $end_date, $count, $count_defective, $price, $price_commission, $comment, $complaint, $is_ready, $status_payment_id, $status_delivery_id);
 }
 
 ?>

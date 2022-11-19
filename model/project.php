@@ -6,7 +6,6 @@ class Project {
 
         $start_date = !empty($start_date) ? "'$start_date'" : "NULL";
         $end_date = !empty($end_date) ? "'$end_date'" : "NULL";
-        $end_date = !empty($end_date) ? "'$end_date'" : "NULL";
         $count = !empty($count) ? "'$count'" : "NULL";
         $count_defective = !empty($count_defective) ? "'$count_defective'" : "NULL";
         $price = !empty($price) ? "'$price'" : "NULL";
@@ -14,10 +13,16 @@ class Project {
         $comment = !empty($comment) ? "'$comment'" : "NULL";
         $complaint = !empty($complaint) ? "'$complaint'" : "NULL";
 
-        return $db_connect->query("INSERT INTO
+        $db_connect->query("INSERT INTO
             `project` (`name`, `address`, `inn`, `start_date`, `end_date`, `count`, `count_defective`,`price`, `price_commission`, `comment`, `complaint`, `is_ready`, `status_payment_id`, `status_delivery_id`)
                 VALUES
-            ('$name','$address','$inn',$start_date,$end_date,$count,$count_defective,'$price','$price_commission',$comment,$complaint,'$is_ready','$status_payment_id','$status_delivery_id')");
+            ('$name','$address','$inn',$start_date,$end_date,$count,$count_defective,$price,$price_commission,$comment,$complaint,'$is_ready','$status_payment_id','$status_delivery_id')");
+    }
+
+    public static function get($limit = 20, $offset = 0) {
+        global $db_connect;
+
+        return $db_connect->query("SELECT * FROM `project` ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
     }
 }
 

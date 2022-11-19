@@ -33,6 +33,8 @@ class DateEditor {
 
         $result = "{$year}-{$month}-{$day}";
 
+        if (strlen($result) < 7) return;
+
         return $result;
     }
 }

@@ -30,42 +30,44 @@ if (isset($button_reg)) {
             <header class="header">
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
-            <div class="container">
-                <form class="col s12" method="POST">
-                    <p class="red-text text-darken-1">
-                        <?= $error ?>
-                    </p>
-                    <div class="input-field col s12">
-                        <input class="validate" id="user_name" type="text" name="user_name">
-                        <label for="user_name">Ваше имя*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="user_email" type="email" name="user_email">
-                        <label for="user_email">Email*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="user_password" type="password" name="user_password">
-                        <label for="user_password">Пароль*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <textarea id="user_about" class="materialize-textarea" name="user_about"></textarea>
-                        <label for="user_about">О себе</label>
-                    </div>
-                    <div class="authorization__bottom">
-                        <strong class="grey-text text-darken-2">
-                            * - обязательное поле
-                        </strong>
-                        <div class="authorization__buttons">
-                            <button class="waves-effect waves-light btn-large blue darken-1" name="button_reg">
-                                Зарегистрироваться
-                            </button>
-                            <a class="blue-text text-darken-1" href="login">
-                                Уже есть аккаунт?
-                            </a>
-                        </div>
-                    </div>
-                </form>
-            </div>
+
+            <ul class="pagination">
+                <li class="disabled">
+                    <a href="#!">
+                        <i class="material-icons"></i>
+                    </a>
+                </li>
+                <li class="active blue darken-1">
+                    <a href="?offset=0">
+                        1
+                    </a>
+                </li>
+                <li class="waves-effect">
+                    <a href="#!">
+                        2
+                    </a>
+                </li>
+                <li class="waves-effect">
+                    <a href="#!">
+                        3
+                    </a>
+                </li>
+                <li class="waves-effect">
+                    <a href="#!">
+                        4
+                    </a>
+                </li>
+                <li class="waves-effect">
+                    <a href="#!">
+                        5
+                    </a>
+                </li>
+                <li class="waves-effect">
+                    <a href="#!">
+                        <i class="material-icons"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
     <? require_once './view/components/script.php'; ?>
