@@ -8,8 +8,6 @@ $page_count = ceil($project_count / 20);
 
 ProjectController::get(20, $page);
 
-var_dump($project_count);
-
 ?>
 
 <!DOCTYPE html>
@@ -30,43 +28,9 @@ var_dump($project_count);
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
             <div class="container">
-
+                <? require_once './view/components/pagination.php'; ?>
             </div>
         </div>
-        <ul class="pagination">
-            <!-- <li class="disabled">
-                <a href="#!">
-                    <i class="material-icons">
-                        chevron_left
-                    </i>
-                </a>
-            </li> -->
-            <? var_dump($page) ?>
-            <? for ($i = $page_ceil; $i < $page_ceil + 10; $i++) : ?>
-                <li class="<?= $i == $page ? 'active blue darken-1' : 'waves-effect' ?>">
-                    <a href="?offset=0">
-                        <?= $i ?>
-                    </a>
-                </li>
-            <? endfor; ?>
-            <li class="active blue darken-1">
-                <a href="?offset=0">
-                    1
-                </a>
-            </li>
-            <li class="waves-effect">
-                <a href="#!">
-                    2
-                </a>
-            </li>
-            <li class="waves-effect">
-                <a href="#!">
-                    <i class="material-icons">
-                        chevron_right
-                    </i>
-                </a>
-            </li>
-        </ul>
     </div>
     <? require_once './view/components/script.php'; ?>
 </body>
