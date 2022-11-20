@@ -6,6 +6,12 @@ class HtmlDom {
     
         return $class;
     }
+
+    public static function checkData($data, $substitution = '-') {
+        if ($data) return $data;
+
+        return $substitution;
+    }
 }
 
 ?>

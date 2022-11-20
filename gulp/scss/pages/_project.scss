@@ -17,4 +17,19 @@
             flex-grow: 1;
         }
     }
+
+    &__button {
+        &_edit {
+            display: flex;
+            align-items: center;
+            column-gap: 20px;
+        }
+    }
+
+    &__is-ready {
+        &_text {
+            display: flex;
+            align-items: center;
+        }
+    }
 }

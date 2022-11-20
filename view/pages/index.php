@@ -1,12 +1,8 @@
 <?
 
-$page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
-$page_ceil = ceil($page / 10) * 10 - 9;
+$page = $_GET['page'] < 1 ? $_GET['page'] = 0 : $_GET['page'];
 
-$project_count = DbQuery::get('project')->num_rows;
-$page_count = ceil($project_count / 20);
-
-ProjectController::get(20, $page);
+$project_list = DbQuery::getDesc('project', 'project_id', 20, $page);
 
 ?>
 
@@ -28,7 +24,33 @@ ProjectController::get(20, $page);
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
             <div class="container">
-                <? require_once './view/components/pagination.php'; ?>
+                <? foreach ($project_list as $project) : ?>
+                    <div class="row">
+                        <div class="col s12 m7">
+                            <div class="card">
+                                <div class="card-content">
+                                    <h2>
+                                        <?= $project['name'] ?>
+                                    </h2>
+                                    <p>
+                                        <?= $project['address'] ?>
+                                    </p>
+                                </div>
+                                <div class="card-action">
+                                    <a href="/project?id=<?= $project['project_id'] ?>">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <? endforeach; ?>
+                <?
+                    $page;
+                    $page_ceil = ceil($page / 10) * 10 - 9;
+
+                    $project_count = DbQuery::get('project')->num_rows;
+                    $page_count = ceil($project_count / 20);
+                    require_once './view/components/pagination.php';
+                ?>
             </div>
         </div>
     </div>

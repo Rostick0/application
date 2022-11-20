@@ -17,6 +17,9 @@ require_once './controller/authorization.php';
 require_once './model/user.php';
 require_once './controller/user.php';
 
+require_once './model/project_access.php';
+require_once './controller/project_access.php';
+
 require_once './model/project.php';
 require_once './controller/project.php';
 

@@ -1,15 +1,8 @@
 <?
 
-$name = $_REQUEST['user_name'];
-$email = $_REQUEST['user_email'];
-$password = $_REQUEST['user_password'];
-$about = $_REQUEST['user_about'];
+$page = $_GET['page'] < 1 ? $_GET['page'] = 0 : $_GET['page'];
 
-$button_reg = $_REQUEST['button_reg'];
-
-if (isset($button_reg)) {
-    $error = UserController::registration($name, $email, $password, $about);
-}
+$project_list = ProjectController::getMy();
 
 ?>
 
@@ -30,44 +23,35 @@ if (isset($button_reg)) {
             <header class="header">
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
+            <div class="container">
+                <? foreach ($project_list as $project) : ?>
+                    <div class="row">
+                        <div class="col s12 m7">
+                            <div class="card">
+                                <div class="card-content">
+                                    <h2>
+                                        <?= $project['name'] ?>
+                                    </h2>
+                                    <p>
+                                        <?= $project['address'] ?>
+                                    </p>
+                                </div>
+                                <div class="card-action">
+                                    <a href="/project?id=<?= $project['project_id'] ?>">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <? endforeach; ?>
+                <?
+                    $page;
+                    $page_ceil = ceil($page / 10) * 10 - 9;
 
-            <ul class="pagination">
-                <li class="disabled">
-                    <a href="#!">
-                        <i class="material-icons"></i>
-                    </a>
-                </li>
-                <li class="active blue darken-1">
-                    <a href="?offset=0">
-                        1
-                    </a>
-                </li>
-                <li class="waves-effect">
-                    <a href="#!">
-                        2
-                    </a>
-                </li>
-                <li class="waves-effect">
-                    <a href="#!">
-                        3
-                    </a>
-                </li>
-                <li class="waves-effect">
-                    <a href="#!">
-                        4
-                    </a>
-                </li>
-                <li class="waves-effect">
-                    <a href="#!">
-                        5
-                    </a>
-                </li>
-                <li class="waves-effect">
-                    <a href="#!">
-                        <i class="material-icons"></i>
-                    </a>
-                </li>
-            </ul>
+                    $project_count = DbQuery::get('project')->num_rows;
+                    $page_count = ceil($project_count / 20);
+                    require_once './view/components/pagination.php';
+                ?>
+            </div>
         </div>
     </div>
     <? require_once './view/components/script.php'; ?>
