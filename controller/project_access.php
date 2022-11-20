@@ -22,6 +22,12 @@ class ProjectAccessController {
 
         return ProjectAccess::create($project_id, $name, $role_id, $user_id);
     }
+
+    public static function check($data, $access_name, $access_array) {
+        if (is_null($data) || is_null($access_array)) return false;
+
+        return array_search($access_name, $access_array) !== false;
+    }
 }
 
 ?>

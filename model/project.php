@@ -41,10 +41,10 @@ class Project {
         $comment = !empty($comment) ? "'$comment'" : "NULL";
         $complaint = !empty($complaint) ? "'$complaint'" : "NULL";
 
-        $db_connect->query("UPDATE `project`
+        return $db_connect->query("UPDATE `project`
         SET
-        `name`='$name',`address`='$address',`inn`='$inn'`start_date`=$start_date,`end_date`=$end_date,`count`=$count,`count_defective`=$count_defective,`price`=$price,`price_commission`=$price_commission,`comment`=$comment,`complaint`=$complaint,`status_payment_id`='$status_payment_id',`status_delivery_id`='$status_delivery_id'
-        WHERE `project_id` = '$project_id';");
+        `name`='$name',`address`='$address',`inn`='$inn',`start_date`=$start_date,`end_date`=$end_date,`count`=$count,`count_defective`=$count_defective,`price`=$price,`price_commission`=$price_commission,`comment`=$comment,`complaint`=$complaint,`status_payment_id`='$status_payment_id',`status_delivery_id`='$status_delivery_id'
+        WHERE `project_id` = '$project_id'");
     }
 }
 
