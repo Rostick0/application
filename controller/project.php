@@ -45,8 +45,8 @@ class ProjectController
     public static function edit($project_id, $name, $address, $inn, $start_date, $end_date, $count, $count_defective, $price, $price_commission, $comment, $complaint, $status_payment_id, $status_delivery_id, $access_array)
     {
         $project_id = (int) $project_id;
-        $name = DbQuery::protectedData($name);
-        $address = DbQuery::protectedData($address);
+        $name = DbQuery::replacingQuotes($name);
+        $address = DbQuery::replacingQuotes($address);
         $inn = (int) $inn;
         $start_date = DateEditor::normalizeDateSql($start_date);
         $end_date = DateEditor::normalizeDateSql($end_date);
@@ -54,8 +54,8 @@ class ProjectController
         $count_defective = (int) $count_defective;
         $price = (float) $price;
         $price_commission = (float) $price_commission;
-        $comment = DbQuery::protectedData($comment);
-        $complaint = DbQuery::protectedData($complaint);
+        $comment = DbQuery::replacingQuotes($comment);
+        $complaint = DbQuery::replacingQuotes($complaint);
         $status_payment_id = (int) $status_payment_id;
         $status_delivery_id = (int) $status_delivery_id;
 
@@ -88,8 +88,8 @@ class ProjectController
             if (!ProjectController::checkEdited($project_old[$type], $data_type[$type])) {
                 $action_edit[] = [
                     'name' => $type,
-                    'old' => $project_old[$type],
-                    'new' => $data_type[$type]
+                    'old' => DbQuery::replacingQuotes($project_old[$type]),
+                    'new' => DbQuery::replacingQuotes($data_type[$type])
                 ];
             }
         }

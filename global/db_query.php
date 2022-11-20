@@ -9,6 +9,14 @@ class DbQuery {
         return $string;
     }
 
+    public static function replacingQuotes($string) {
+        $string = htmlspecialchars(str_replace("'", '&apos;', $string));
+        $string = htmlspecialchars(str_replace('"', '&quot;', $string));
+        // $string = htmlspecialchars($string);
+
+        return $string;
+    }
+
     public static function get($table, $column = null, $value = null, $limit = null, $offset = null) {
         global $db_connect;
     
