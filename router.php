@@ -27,11 +27,14 @@ switch ($URI) {
     case '/project/my':
         $path_page .= '/project/my.php';
         break;
-    case '/profile':
-        $path_page .= '/profile/profile.php';
+    case '/history':
+        $path_page .= '/history/index.php';
         break;
-    case '/admin':
-        $path_page .= '/admin/index.php';
+    // case '/profile':
+    //     $path_page .= '/profile/profile.php';
+    //     break;
+    // case '/admin':
+    //     $path_page .= '/admin/index.php';
         break;
     default:
         $path_page .= '/404.php';

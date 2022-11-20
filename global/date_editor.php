@@ -4,6 +4,8 @@ class DateEditor {
     public static function normalizeDate($date, $haveYear = false) {
         global $MONTHS_SHORT;
 
+        if (mb_strlen($date) < 1) return;
+
         $result = mb_substr($date, 5, 6);
         $result = $MONTHS_SHORT[mb_substr($result, 0, 2) - 1] . ' ' . mb_substr($result, -2);
 

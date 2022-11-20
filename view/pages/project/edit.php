@@ -24,6 +24,7 @@ $comment = $_REQUEST['project_comment'];
 $complaint = $_REQUEST['project_complaint'];
 $status_payment_id = $_REQUEST['status_payment_id'];
 $status_delivery_id = $_REQUEST['status_delivery_id'];
+$is_ready = $_REQUEST['is_ready'] ? 1 : 0;
 
 $button_create = $_REQUEST['button_create'];
 
@@ -34,6 +35,10 @@ $user_power = DbQuery::parse('role', 'role_id', $_SESSION['user']['role_id'], 'p
 
 if (isset($button_create)) {
     $error = ProjectController::edit($project_id, $name, $address, $inn, $start_date, $end_date, $count, $count_defective, $price, $price_commission, $comment, $complaint, $status_payment_id, $status_delivery_id, $my_access);
+
+    if ($project['is_ready'] != $is_ready) {
+        $error = ProjectController::setReady($project_id, $is_ready);
+    }
 }
 
 ?>
@@ -63,7 +68,7 @@ if (isset($button_create)) {
                         </p>
                     <? endif; ?>
                     <div class="input-field col s12">
-                        <? if (array_search('name', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('name', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <input class="validate" id="project_name" type="text" name="project_name" value="<?= $project['name'] ?>">
                             <label for="project_name">Название*</label>
                         <? else : ?>
@@ -76,7 +81,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('address', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('address', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <input class="validate" id="project_address" type="text" name="project_address" value="<?= $project['address'] ?>">
                             <label for="project_address">
                                 Адрес*
@@ -91,7 +96,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('inn', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('inn', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <input class="validate" id="project_inn" type="number" name="project_inn" value="<?= $project['inn'] ?>">
                             <label for="project_inn">ИНН*</label>
                         <? else : ?>
@@ -104,7 +109,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('count', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('count', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <input class="validate" id="project_count" type="number" name="project_count" value="<?= $project['count'] ?>">
                             <label for="project_count">Количество товара*</label>
                         <? else : ?>
@@ -117,7 +122,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('count_defective', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('count_defective', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <input class="validate" id="project_count_defective" type="number" name="project_count_defective" value="<?= $project['count_defective'] ?>">
                             <label for="project_count_defective">Количество брака*</label>
                         <? else : ?>
@@ -131,34 +136,34 @@ if (isset($button_create)) {
                     </div>
                     <div class="project__dates">
                         <div class="input-field col s12">
-                            <? if (array_search('start_date', $my_acces_array) !== false || $user_power > 20) : ?>
-                                <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" readonly value="<?= $project['start_date'] ?>">
+                            <? if (array_search('start_date', $my_acces_array) !== false || $user_power >= 25) : ?>
+                                <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" readonly value="<?= DateEditor::normalizeDate($project['start_date'], true) ?>">
                                 <label for="project_start_date">Дата начала*</label>
                             <? else : ?>
                                 <strong>
                                     Дата начала
                                 </strong>
                                 <p>
-                                    <?= $project['start_date'] ?>
+                                    <?= DateEditor::normalizeDate($project['start_date'], true) ?>
                                 </p>
                             <? endif; ?>
                         </div>
                         <div class="input-field col s12">
-                            <? if (array_search('end_date', $my_acces_array) !== false || $user_power > 20) : ?>
-                                <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" readonly value="<?= $project['end_date'] ?>">
+                            <? if (array_search('end_date', $my_acces_array) !== false || $user_power >= 25) : ?>
+                                <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" readonly value="<?= DateEditor::normalizeDate($project['end_date'], true) ?>">
                                 <label for="project_end_date">Дата окончания*</label>
                             <? else : ?>
                                 <strong>
                                     Дата окончания
                                 </strong>
                                 <p>
-                                    <?= $project['end_date'] ?>
+                                    <?= DateEditor::normalizeDate($project['end_date'], true) ?>
                                 </p>
                             <? endif; ?>
                         </div>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('price', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('price', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <input class="validate" id="project_price" type="number" name="project_price" value="<?= $project['price'] ?>">
                             <label for="project_price">Цена*</label>
                         <? else : ?>
@@ -171,7 +176,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('price_commission', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('price_commission', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <input class="validate" id="project_price_commission" type="number" name="project_price_commission" value="<?= $project['price_commission'] ?>">
                             <label for="project_price_commission">Цена с комиссей*</label>
                         <? else : ?>
@@ -184,7 +189,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('comment', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('comment', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <textarea class="materialize-textarea" id="project_comment" name="project_comment"><?= $project['comment'] ?></textarea>
                             <label for="project_comment">Комментарий</label>
                         <? else : ?>
@@ -197,7 +202,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('complaint', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('complaint', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <textarea class="materialize-textarea" id="project_complaint" name="project_complaint"><?= $project['complaint'] ?></textarea>
                             <label for="project_complaint">
                                 Замечания
@@ -212,7 +217,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('status_delivery', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('status_delivery', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <select name="status_delivery_id">
                                 <? foreach ($status_delivery as $value) : ?>
                                     <option value="<?= $value['status_delivery_id'] ?>" <?= $project['status_delivery_id'] == $value['status_delivery_id'] ? 'selected' : '' ?>><?= $value['name'] ?></option>
@@ -231,7 +236,7 @@ if (isset($button_create)) {
                         <? endif; ?>
                     </div>
                     <div class="input-field col s12">
-                        <? if (array_search('status_delivery', $my_acces_array) !== false || $user_power > 20) : ?>
+                        <? if (array_search('status_delivery', $my_acces_array) !== false || $user_power >= 25) : ?>
                             <select name="status_payment_id">
                                 <? foreach ($status_payment as $value) : ?>
                                     <option value="<?= $value['status_payment_id'] ?>" <?= $project['status_payment_id'] == $value['status_payment_id'] ? 'selected' : '' ?>><?= $value['name'] ?></option>
@@ -254,7 +259,7 @@ if (isset($button_create)) {
                             Изменить
                         </button>
                         <label class="project__is-ready">
-                            <input type="checkbox" class="filled-in" />
+                            <input type="checkbox" class="filled-in" name="is_ready">
                             <span class="project__is-ready_text">
                                 <span class="project__is-ready_text">
                                     Заявка готова?

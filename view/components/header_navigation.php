@@ -16,6 +16,13 @@
                     Мои проекты
                 </a>
             </li>
+            <? if (DbQuery::parse('role', 'role_id', $_SESSION['user']['role_id'], 'power') >= 25): ?>
+            <li class="header__navigation_item <?= HtmlDom::setClass('active', $URI === '/history') ?>">
+                <a href="/history">
+                    История
+                </a>
+            </li>
+            <? endif; ?>
             <li class="header__navigation_item">
                 <a href="">
                     Выход

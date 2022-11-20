@@ -46,6 +46,12 @@ class Project {
         `name`='$name',`address`='$address',`inn`='$inn',`start_date`=$start_date,`end_date`=$end_date,`count`=$count,`count_defective`=$count_defective,`price`=$price,`price_commission`=$price_commission,`comment`=$comment,`complaint`=$complaint,`status_payment_id`='$status_payment_id',`status_delivery_id`='$status_delivery_id'
         WHERE `project_id` = '$project_id'");
     }
+
+    public static function setReady($project_id, $is_ready) {
+        global $db_connect;
+
+        return $db_connect->query("UPDATE `project` SET `is_ready` = '$is_ready' WHERE `project_id` = '$project_id'");
+    }
 }
 
 ?>
