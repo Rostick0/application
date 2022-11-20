@@ -75,14 +75,20 @@ class ProjectController
             'status_delivery_id'
         );
 
+        $access_array_name = json_decode($access_array['name'], true);
+
         $project_old = DbQuery::get('project', 'project_id', $project_id)->fetch_assoc();
 
         $action_edit = [];
 
+        $user_power = DbQuery::parse('role', 'role_id', $_SESSION['user']['role_id'], 'power');
+
         foreach ($data_type as $type => $value) {
-            if (!ProjectAccessController::check($value, $type, $access_array)) {
-                $data_type[$type] = $project_old[$type];
-                continue;
+            if ($access_array_name != '"all"' || $user_power > 20) {
+                if (!ProjectAccessController::check($value, $type, $access_array_name)) {
+                    $data_type[$type] = $project_old[$type];
+                    continue;
+                }
             }
 
             if (!ProjectController::checkEdited($project_old[$type], $data_type[$type])) {
@@ -100,13 +106,13 @@ class ProjectController
 
         if (!$data_type['inn']) return "Отсуствует ИНН";
 
-        $query = Project::edit($project_id, $data_type['name'], $data_type['address'], $data_type['inn'], $data_type['start_date'], $data_type['end_date'], $data_type['count'], $data_type['count_defective'], $data_type['price'], $data_type['price_commission'], $data_type['comment'], $data_type['complaint'], $data_type['status_payment_id'], $data_type['status_delivery_id']);
+        // $query = Project::edit($project_id, $data_type['name'], $data_type['address'], $data_type['inn'], $data_type['start_date'], $data_type['end_date'], $data_type['count'], $data_type['count_defective'], $data_type['price'], $data_type['price_commission'], $data_type['comment'], $data_type['complaint'], $data_type['status_payment_id'], $data_type['status_delivery_id']);
 
-        if (!$query) return "Ошибка при изменении данных";
+        // if (!$query) return "Ошибка при изменении данных";
 
-        if (count($action_edit) < 1) return;
+        // if (count($action_edit) < 1) return;
 
-        ProjectHistoryEditController::create($action_edit, $project_id, $_SESSION['user']['user_id']);
+        // ProjectHistoryEditController::create($action_edit, $project_id, $_SESSION['user']['user_id']);
     }
 
     public static function checkEdited($old, $new) {
