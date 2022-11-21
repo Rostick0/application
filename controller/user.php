@@ -30,6 +30,7 @@ class UserController {
         $user = DbQuery::get('user', 'user_id', $user_id)->fetch_assoc();
 
         SessionUser::create($user);
+        header('Location: /');
     }
 
     public static function log($email, $password) {
@@ -52,6 +53,7 @@ class UserController {
         AuthorizationController::create($token, $user['user_id']);
 
         SessionUser::create($user);
+        header('Location: /');
     }
 
     public static function search($email, $limit = 20, $offset = 0) {

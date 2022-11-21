@@ -24,7 +24,7 @@
             </li>
             <? endif; ?>
             <li class="header__navigation_item">
-                <a href="">
+                <a href="/logout">
                     Выход
                 </a>
             </li>

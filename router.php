@@ -15,6 +15,9 @@ switch ($URI) {
     case '/login':
         $path_page .= '/authorization/login.php';
         break;
+    case '/logout':
+        $path_page .= '/logout.php';
+        break;
     case '/project':
         $path_page .= '/project/index.php';
         break;
