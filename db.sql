@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 18 2022 г., 11:24
+-- Время создания: Ноя 21 2022 г., 17:10
 -- Версия сервера: 5.7.38
 -- Версия PHP: 7.4.29
 
@@ -36,6 +36,8 @@ CREATE TABLE `authorization` (
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
 -- Структура таблицы `project`
 --
@@ -46,17 +48,55 @@ CREATE TABLE `project` (
   `address` varchar(255) NOT NULL,
   `inn` varchar(255) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `start_date` datetime NOT NULL,
-  `end_date` datetime NOT NULL,
-  `count` int(11) NOT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `count` int(11) DEFAULT NULL,
   `count_defective` int(11) DEFAULT NULL,
-  `price` float NOT NULL,
-  `price_commission` float NOT NULL,
+  `price` float DEFAULT NULL,
+  `price_commission` float DEFAULT NULL,
   `comment` text,
+  `complaint` text,
   `is_ready` tinyint(1) NOT NULL DEFAULT '0',
   `is_finally` tinyint(1) NOT NULL DEFAULT '0',
   `status_payment_id` int(11) NOT NULL DEFAULT '1',
   `status_delivery_id` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `project_access`
+--
+
+CREATE TABLE `project_access` (
+  `project_access_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `name` json NOT NULL,
+  `role_id` int(11) NOT NULL DEFAULT '1',
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Дамп данных таблицы `project_access`
+--
+
+INSERT INTO `project_access` (`project_access_id`, `project_id`, `name`, `role_id`, `user_id`) VALUES
+(1, 3, '[\"address\", \"count\"]', 2, 1),
+(2, 2, '[\"all\"]', 2, 1),
+(3, 2, '[\"address\"]', 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `project_history_edit`
+--
+
+CREATE TABLE `project_history_edit` (
+  `project_history_edit_id` int(11) NOT NULL,
+  `action` json NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `project_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -136,6 +176,10 @@ CREATE TABLE `user` (
   `role_id` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+-- Индексы сохранённых таблиц
+--
+
 --
 -- Индексы таблицы `authorization`
 --
@@ -148,6 +192,21 @@ ALTER TABLE `authorization`
 --
 ALTER TABLE `project`
   ADD PRIMARY KEY (`project_id`);
+
+--
+-- Индексы таблицы `project_access`
+--
+ALTER TABLE `project_access`
+  ADD PRIMARY KEY (`project_access_id`),
+  ADD KEY `role_id` (`role_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `project_id` (`project_id`);
+
+--
+-- Индексы таблицы `project_history_edit`
+--
+ALTER TABLE `project_history_edit`
+  ADD PRIMARY KEY (`project_history_edit_id`);
 
 --
 -- Индексы таблицы `role`
@@ -191,6 +250,18 @@ ALTER TABLE `project`
   MODIFY `project_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT для таблицы `project_access`
+--
+ALTER TABLE `project_access`
+  MODIFY `project_access_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `project_history_edit`
+--
+ALTER TABLE `project_history_edit`
+  MODIFY `project_history_edit_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `role`
 --
 ALTER TABLE `role`
@@ -223,6 +294,14 @@ ALTER TABLE `user`
 --
 ALTER TABLE `authorization`
   ADD CONSTRAINT `authorization_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Ограничения внешнего ключа таблицы `project_access`
+--
+ALTER TABLE `project_access`
+  ADD CONSTRAINT `project_access_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`),
+  ADD CONSTRAINT `project_access_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  ADD CONSTRAINT `project_access_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `project` (`project_id`);
 
 --
 -- Ограничения внешнего ключа таблицы `user`
