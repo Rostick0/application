@@ -1,6 +1,8 @@
 <?
 
-$page = $_GET['page'];
+$project_id = (int) $_GET['project_id'];
+
+$page = (int) $_GET['page'];
 $page = $page ? $page : 1;
 $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 
@@ -10,28 +12,14 @@ $page_ceil = ceil($page / 10) * 10 - 9;
 $project_count = DbQuery::get('project')->num_rows;
 $page_count = ceil($project_count / 20);
 
-$user_list = DbQuery::getDesc('user', 'user_id', 20, $page_offset);
+$user_search = DbQuery::protectedData($_REQUEST['user_search']);
+$user_email = $_REQUEST['user_email'];
 
-$project_access_list = [
-    'name' => 'Название',
-    'address' => 'Адрес',
-    'start_date' => 'Дата начала',
-    'end_date' => 'Дата окончания',
-    'count' => 'Количество',
-    'count_defective' => 'Количество брака',
-    'price' => 'Цена',
-    'price_commission' => 'Цена с комиссией',
-    'comment' => 'Комменатрий',
-    'complaint' => 'Замечания',
-    'all' => 'Всё'
-];
-
-
-if (isset($_REQUEST['button_edit'])) {
-    var_dump($_REQUEST['user_access_2']);
+if ($user_email) {
+    $user_list = UserController::search($user_email, 20, $page_offset);
+} else {
+    $user_list = DbQuery::getDesc('user', 'user_id', 20, $page_offset);
 }
-
-// var_dump($button_edit);
 
 ?>
 
@@ -43,16 +31,28 @@ if (isset($_REQUEST['button_edit'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <? require_once './view/components/style.php'; ?>
-    <title>Создание проекта</title>
+    <title>Поиск людей</title>
 </head>
 
 <body>
     <div class="wrapper">
-        <div class="project">
+        <div class="project users">
             <header class="header">
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
-            <form class="container" method="POST">
+            <div class="container">
+                <form class="users__form" method="GET">
+                    <div class="users__input input-field">
+                        <input class="validate" id="user_email" type="text" name="user_email">
+                        <label for="user_email">Поиск по почте</label>
+                    </div>
+                    <button class="btn waves-effect waves-light blue darken-1" type="submit" >
+                        <span>
+                            Поиск
+                        </span>
+                        <i class="material-icons right">send</i>
+                    </button>
+                </form>
                 <? foreach ($user_list as $user) : ?>
                     <div class="col s12 m7">
                         <div class="card">
@@ -64,7 +64,7 @@ if (isset($_REQUEST['button_edit'])) {
                                 </div>
                             </div>
                             <div class="card-action">
-                                <a href="/project/users/add?id=<?= $user['user_id'] ?>">
+                                <a href="/project/users/add?id=<?= $user['user_id'] ?>&project_id<?= $project_id ?>">
                                     Изменить роль
                                 </a>
                             </div>
@@ -77,9 +77,10 @@ if (isset($_REQUEST['button_edit'])) {
 
                 $project_count;
                 $page_count;
+                $project_query_add = "&project_id=$project_id";
                 require_once './view/components/pagination.php';
                 ?>
-            </form>
+            </div>
         </div>
     </div>
     <? require_once './view/components/script.php'; ?>

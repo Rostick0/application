@@ -17,6 +17,8 @@ $access_list = [
     'price_commission' => 'Цена с комиссией',
     'comment' => 'Комменатрий',
     'complaint' => 'Замечания',
+    'add_people' => 'Добавлять людей',
+    'edit_role' => 'Изменять роли',
     'all' => 'Всё'
 ];
 
@@ -28,8 +30,8 @@ $access_checked = filter_input(
 );;
 
 if (isset($_REQUEST['button_edit'])) {
-    var_dump($_REQUEST['user_access']);
     var_dump($access_checked);
+    $error = ProjectAccessController::edit($project_id, $access_checked, $user_id);
 }
 
 
@@ -43,7 +45,7 @@ if (isset($_REQUEST['button_edit'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <? require_once './view/components/style.php'; ?>
-    <title>Создание проекта</title>
+    <title>Изменение роли</title>
 </head>
 
 <body>
@@ -53,6 +55,9 @@ if (isset($_REQUEST['button_edit'])) {
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
             <form class="container" method="POST">
+                <p class="red-text text-darken-1">
+                    <?= $error ?>
+                </p>
                 <h2>
                     <span>
                         Изменение в проекте #<?= $project['project_id'] ?>

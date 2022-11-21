@@ -51,7 +51,7 @@ if (isset($button_create)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <? require_once './view/components/style.php'; ?>
-    <title>Создание проекта</title>
+    <title>Редактирование проекта</title>
 </head>
 
 <body>
@@ -258,6 +258,9 @@ if (isset($button_create)) {
                         <button class="waves-effect waves-light btn-large blue darken-1" name="button_create">
                             Изменить
                         </button>
+                        <a href="/project/users?project_id=<?= $project_id ?>">
+                            Добавить участников
+                        </a>
                         <label class="project__is-ready">
                             <input type="checkbox" class="filled-in" name="is_ready">
                             <span class="project__is-ready_text">

@@ -1,6 +1,6 @@
 <?
 
-$page = $_GET['page'];
+$page = (int) $_GET['page'];
 $page = $page ? $page : 1;
 $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 
@@ -22,7 +22,7 @@ $project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <? require_once './view/components/style.php'; ?>
-    <title>Создание проекта</title>
+    <title>Все проекты</title>
 </head>
 
 <body>

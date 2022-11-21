@@ -53,6 +53,14 @@ class UserController {
 
         SessionUser::create($user);
     }
+
+    public static function search($email, $limit = 20, $offset = 0) {
+        $email = DbQuery::protectedData($email);
+        $limit = (int) $limit;
+        $offset = (int) $offset;
+
+        return User::search($email, $limit, $offset);
+    }
 }
 
 ?>

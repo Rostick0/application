@@ -2,7 +2,7 @@
     <ul class="pagination">
         <? if ($page_count > 10) : ?>
             <li>
-                <a href="?page=<?= $page_ceil - 10 ?>">
+                <a href="?page=<?= $page_ceil - 10 . $project_query_add ?>">
                     <i class="material-icons">
                         chevron_left
                     </i>
@@ -21,7 +21,7 @@
         <? for ($i = $page_ceil; $i < $page_ceil + 10; $i++) : ?>
             <? if ($page_count < $i) break; ?>
             <li class="<?= $i == $page ? 'active blue darken-1' : 'waves-effect' ?>">
-                <a href="?page=<?= $i ?>">
+                <a href="?page=<?= $i . $project_query_add ?>">
                     <?= $i ?>
                 </a>
             </li>
@@ -29,7 +29,7 @@
 
         <? if ($page_count > $page) : ?>
             <li class="waves-effect">
-                <a href="?page=<?= $page_ceil + 10 ?>">
+                <a href="?page=<?= $page_ceil + 10 . $project_query_add ?>">
                     <i class="material-icons">
                         chevron_right
                     </i>

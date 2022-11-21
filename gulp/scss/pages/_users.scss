@@ -1,0 +1,11 @@
+.users {
+    &__form {
+        display: flex;
+        align-items: center;
+        grid-gap: 24px;
+    }
+
+    &__input {
+        flex-grow: 1;
+    }
+}

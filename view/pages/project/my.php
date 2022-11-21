@@ -14,7 +14,7 @@ $project_list = ProjectController::getMy();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <? require_once './view/components/style.php'; ?>
-    <title>Создание проекта</title>
+    <title>Мои проекты</title>
 </head>
 
 <body>
