@@ -25,31 +25,47 @@ $project_list = ProjectController::getMy();
             </header>
             <div class="container">
                 <? foreach ($project_list as $project) : ?>
-                    <div class="row">
-                        <div class="col s12 m7">
-                            <div class="card">
-                                <div class="card-content">
-                                    <h2>
+                    <div class="col s12 m7">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-content__top">
+                                    <h2 class="card-content__title">
                                         <?= $project['name'] ?>
                                     </h2>
-                                    <p>
-                                        <?= $project['address'] ?>
-                                    </p>
+                                    <div class="card-contet__time">
+                                        <?= $project['created_date'] ?>
+                                    </div>
                                 </div>
-                                <div class="card-action">
-                                    <a href="/project?id=<?= $project['project_id'] ?>">Подробнее</a>
-                                </div>
+                                <p>
+                                    <?= $project['address'] ?>
+                                </p>
+                                <p class="card-content__ready-status">
+                                    <strong>
+                                        <? if ($project['is_ready']) : ?>
+                                            <span class="green-text text-darken-3">
+                                                Готов
+                                            </span>
+                                        <? else : ?>
+                                            <span class="red-text text-darken-3">
+                                                Не готов
+                                            </span>
+                                        <? endif; ?>
+                                    </strong>
+                                </p>
+                            </div>
+                            <div class="card-action">
+                                <a href="/project?id=<?= $project['project_id'] ?>">Подробнее</a>
                             </div>
                         </div>
                     </div>
                 <? endforeach; ?>
                 <?
-                    $page;
-                    $page_ceil = ceil($page / 10) * 10 - 9;
+                $page;
+                $page_ceil;
 
-                    $project_count = DbQuery::get('project')->num_rows;
-                    $page_count = ceil($project_count / 20);
-                    require_once './view/components/pagination.php';
+                $project_count;
+                $page_count;
+                require_once './view/components/pagination.php';
                 ?>
             </div>
         </div>

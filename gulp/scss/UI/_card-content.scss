@@ -1,0 +1,15 @@
+.card-content {
+    &__top {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__title {
+        margin-bottom: 8px;
+    }
+    
+
+    &__ready-status {
+        
+    }
+}

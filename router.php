@@ -27,6 +27,12 @@ switch ($URI) {
     case '/project/my':
         $path_page .= '/project/my.php';
         break;
+    case '/project/users':
+        $path_page .= '/project/users/index.php';
+        break;
+    case '/project/users/add':
+        $path_page .= '/project/users/add.php';
+        break;
     case '/history':
         $path_page .= '/history/index.php';
         break;

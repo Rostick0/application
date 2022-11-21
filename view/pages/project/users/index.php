@@ -10,7 +10,28 @@ $page_ceil = ceil($page / 10) * 10 - 9;
 $project_count = DbQuery::get('project')->num_rows;
 $page_count = ceil($project_count / 20);
 
-$project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
+$user_list = DbQuery::getDesc('user', 'user_id', 20, $page_offset);
+
+$project_access_list = [
+    'name' => 'Название',
+    'address' => 'Адрес',
+    'start_date' => 'Дата начала',
+    'end_date' => 'Дата окончания',
+    'count' => 'Количество',
+    'count_defective' => 'Количество брака',
+    'price' => 'Цена',
+    'price_commission' => 'Цена с комиссией',
+    'comment' => 'Комменатрий',
+    'complaint' => 'Замечания',
+    'all' => 'Всё'
+];
+
+
+if (isset($_REQUEST['button_edit'])) {
+    var_dump($_REQUEST['user_access_2']);
+}
+
+// var_dump($button_edit);
 
 ?>
 
@@ -31,38 +52,21 @@ $project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
             <header class="header">
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
-            <div class="container">
-                <? foreach ($project_list as $project) : ?>
+            <form class="container" method="POST">
+                <? foreach ($user_list as $user) : ?>
                     <div class="col s12 m7">
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-content__top">
                                     <h2 class="card-content__title">
-                                        <?= $project['name'] ?>
+                                        <?= $user['email'] ?>
                                     </h2>
-                                    <div class="card-contet__time">
-                                        <?= $project['created_date'] ?>
-                                    </div>
                                 </div>
-                                <p>
-                                    <?= $project['address'] ?>
-                                </p>
-                                <p class="card-content__ready-status">
-                                    <strong>
-                                        <? if ($project['is_ready']) : ?>
-                                            <span class="green-text text-darken-3">
-                                                Готов
-                                            </span>
-                                        <? else : ?>
-                                            <span class="red-text text-darken-3">
-                                                Не готов
-                                            </span>
-                                        <? endif; ?>
-                                    </strong>
-                                </p>
                             </div>
                             <div class="card-action">
-                                <a href="/project?id=<?= $project['project_id'] ?>">Подробнее</a>
+                                <a href="/project/users/add?id=<?= $user['user_id'] ?>">
+                                    Изменить роль
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -75,7 +79,7 @@ $project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
                 $page_count;
                 require_once './view/components/pagination.php';
                 ?>
-            </div>
+            </form>
         </div>
     </div>
     <? require_once './view/components/script.php'; ?>
