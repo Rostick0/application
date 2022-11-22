@@ -1,26 +1,42 @@
 <?
 
+$users = DbQuery::get('user');
+$zmo = DbQuery::get('zmo');
 $status_delivery = DbQuery::get('status_delivery');
 $status_payment = DbQuery::get('status_payment');
 
+$is_made_order = $_REQUEST['project_is_made_order'];
+$documents = $_REQUEST['project_documents'];
+$document_scan = $_REQUEST['project_document_scan'];
 $name = $_REQUEST['project_name'];
-$address = $_REQUEST['project_address'];
+$address = NULL;
 $inn = $_REQUEST['project_inn'];
-$count = $_REQUEST['project_count'];
-$count_defective = $_REQUEST['project_count_defective'];
+$contract = $_REQUEST['project_contract'];
+$zmo_id = $_REQUEST['project_zmo'];
 $start_date = $_REQUEST['project_start_date'];
 $end_date = $_REQUEST['project_end_date'];
-$price = $_REQUEST['project_price'];
-$price_commission = $_REQUEST['project_price_commission'];
 $comment = $_REQUEST['project_comment'];
 $complaint = $_REQUEST['project_complaint'];
-$status_payment_id = $_REQUEST['status_payment_id'];
-$status_delivery_id = $_REQUEST['status_delivery_id'];
 
 $button_create = $_REQUEST['button_create'];
 
+$text = [];
+$products = [
+    $_REQUEST['product_name'],
+    $_REQUEST['product_address_from'],
+    $_REQUEST['product_address_to'],
+    $_REQUEST['product_count'],
+    $_REQUEST['product_unit_measurement'],
+    $_REQUEST['product_price'],
+    $_REQUEST['product_amount'],
+    $_REQUEST['product_purchase_price'],
+    $_REQUEST['product_purchase_amount'],
+    $_REQUEST['product_status_delivery'],
+    $_REQUEST['product_status_payment'],
+];
+
 if (isset($button_create)) {
-    $error = ProjectController::create($name, $address, $inn, $start_date, $end_date, $count, $count_defective, $price, $price_commission, $comment, $complaint, $is_ready, $status_payment_id, $status_delivery_id);
+    $error = ProjectController::create($name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, 0, $products);
 }
 
 ?>
@@ -43,83 +59,169 @@ if (isset($button_create)) {
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
             <div class="container">
-                <form class="col s12 project__form" method="POST">
+                <div class="project__container">
                     <? if ($error) : ?>
                         <p class="project__form_error red-text text-darken-1">
                             <?= $error ?>
                         </p>
                     <? endif; ?>
-                    <div class="input-field col s12">
-                        <input class="validate" id="project_name" type="text" name="project_name">
-                        <label for="project_name">Название*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="project_address" type="text" name="project_address">
-                        <label for="project_address">Адрес*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="project_inn" type="number" name="project_inn">
-                        <label for="project_inn">ИНН*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="project_count" type="number" name="project_count">
-                        <label for="project_count">Количество товара*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="project_count_defective" type="number" name="project_count_defective">
-                        <label for="project_count_defective">Количество брака*</label>
-                    </div>
-                    <div class="project__dates">
-                        <div class="input-field col s12">
-                            <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" readonly>
-                            <label for="project_start_date">Дата начала*</label>
+                    <form class="col s12 project__form" method="POST">
+                        <div class="project__flex">
+                            <label class="project__is-ready">
+                                <input type="checkbox" class="filled-in" name="project_is_made_order">
+                                <span class="project__is-ready_text">
+                                    <span class="project__is-ready_text">
+                                        Заказ сделан?
+                                    </span>
+                                </span>
+                            </label>
+                            <label class="project__is-ready">
+                                <input type="checkbox" class="filled-in" name="project_documents">
+                                <span class="project__is-ready_text">
+                                    <span class="project__is-ready_text">
+                                        Документы готовы?
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="project__flex">
+                            <label class="project__is-ready">
+                                <input type="checkbox" class="filled-in" name="project_document_scan">
+                                <span class="project__is-ready_text">
+                                    <span class="project__is-ready_text">
+                                        Скан документов готов?
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="project__flex">
+                            <div class="input-field col s12">
+                                <select name="project_manager">
+                                    <? foreach ($users as $value) : ?>
+                                        <option value="<?= $value['user_id'] ?>"><?= $value['email'] ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                                <label>Выбрать менеджера</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="project_name" type="text" name="project_name">
+                                <label for="project_name">Название*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="project_inn" type="number" name="project_inn">
+                                <label for="project_inn">ИНН*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="project_contract" type="number" name="project_contract">
+                                <label for="project_contract">Договор</label>
+                            </div>
+                        </div>
+                        <div class="project__flex">
+                            <div class="input-field col s12">
+                                <select name="project_zmo">
+                                    <? foreach ($zmo as $value) : ?>
+                                        <option value="<?= $value['zmo_id'] ?>"><?= $value['name'] ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                                <label>ЗМО</label>
+                            </div>
+                        </div>
+                        <div class="project__flex">
+                            <div class="input-field col s12">
+                                <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" readonly>
+                                <label for="project_start_date">Дата начала*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" readonly>
+                                <label for="project_end_date">Дата окончания*</label>
+                            </div>
                         </div>
                         <div class="input-field col s12">
-                            <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" readonly>
-                            <label for="project_end_date">Дата окончания*</label>
+                            <textarea class="materialize-textarea" id="project_comment" name="project_comment"></textarea>
+                            <label for="project_comment">Комментарий</label>
                         </div>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="project_price" type="number" name="project_price">
-                        <label for="project_price">Цена*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <input class="validate" id="project_price_commission" type="number" name="project_price_commission">
-                        <label for="project_price_commission">Цена с комиссей*</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <textarea class="materialize-textarea" id="project_comment" name="project_comment"></textarea>
-                        <label for="project_comment">Комментарий</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <textarea class="materialize-textarea" id="project_complaint" name="project_complaint"></textarea>
-                        <label for="project_complaint">Замечания</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <select name="status_delivery_id">
-                            <? foreach ($status_delivery as $value) : ?>
-                                <option value="<?= $value['status_delivery_id'] ?>"><?= $value['name'] ?></option>
-                            <? endforeach; ?>
-                        </select>
-                        <label>Статус доставки</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <select name="status_payment_id">
-                            <? foreach ($status_payment as $value) : ?>
-                                <option value="<?= $value['status_payment_id'] ?>"><?= $value['name'] ?></option>
-                            <? endforeach; ?>
-                        </select>
-                        <label>Статус оплаты</label>
-                    </div>
-                    <div class="project__button">
-                        <button class="waves-effect waves-light btn-large blue darken-1" name="button_create">
-                            Создать
-                        </button>
-                    </div>
-                </form>
+                        <div class="input-field col s12">
+                            <textarea class="materialize-textarea" id="project_complaint" name="project_complaint"></textarea>
+                            <label for="project_complaint">Замечания</label>
+                        </div>
+                        <div class="project__button project__button_add">
+                            <button class="waves-effect waves-light btn-large blue darken-1 product_add">
+                                Добавить товар
+                            </button>
+                        </div>
+                        <div class="project__button">
+                            <button class="waves-effect waves-light btn-large blue darken-1" name="button_create">
+                                Создать
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    <script>
+        let count_created = 0;
+
+        const productHtml = `
+                        <div class="project__flex">
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_name_${count_created}" type="text" name="product_name[]">
+                                <label for="product_name_${count_created}">Наименование*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_address_from_${count_created}" type="number" name="product_address_from[]">
+                                <label for="product_address_from_${count_created}">Количество*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_address_too_${count_created}" type="number" name="product_address_to[]">
+                                <label for="product_address_too_${count_created}">Количество*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_count_${count_created}" type="number" name="product_count[]">
+                                <label for="product_count_${count_created}">Количество*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_unit_measurement_${count_created}" type="text" name="product_unit_measurement[]">
+                                <label for="product_unit_measurement_${count_created}">ед. из</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_price_${count_created}" type="number" name="product_price[]">
+                                <label for="product_price_${count_created}">Цена*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_amount_${count_created}" type="number" name="product_amount[]">
+                                <label for="product_amount_${count_created}">Сумма*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_purchase_price_${count_created}" type="number" name="product_purchase_price[]">
+                                <label for="product_purchase_price_${count_created}">Цена закупа*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_purchase_amount_${count_created}" type="number" name="product_purchase_amount[]">
+                                <label for="product_purchase_amount_${count_created}">Сумма закупа*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <select name="product_status_delivery[]">
+                                    <? foreach ($status_delivery as $value) : ?>
+                                        <option value="<?= $value['status_delivery_id'] ?>"><?= $value['name'] ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                                <label>
+                                    Статус доставка
+                                </label>
+                            </div>
+                            <div class="input-field col s12">
+                                <select name="product_status_payment[]">
+                                    <? foreach ($status_payment as $value) : ?>
+                                        <option value="<?= $value['status_payment_id'] ?>"><?= $value['name'] ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                                <label>
+                                    Статус оплаты
+                                </label>
+                            </div>
+                        </div>`;
+    </script>
     <? require_once './view/components/script.php'; ?>
 </body>
 

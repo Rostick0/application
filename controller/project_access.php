@@ -10,12 +10,13 @@ class ProjectAccessController {
 
     public static function create($project_id, $name, $user_id) {
         $project_id = (int) $project_id;
-        $name = json_encode(DbQuery::replacingQuotes($name));
         $user_id = (int) $user_id;
 
         if (!$project_id) return "Не выбран проект";
 
         if (!$user_id) return "Не выбран пользователь";
+
+        var_dump($name);
 
         return ProjectAccess::create($project_id, $name, $user_id);
     }
@@ -61,12 +62,7 @@ class ProjectAccessController {
             ProjectAccess::create($project_id, $name_protected, $user_id);
         }
 
-        $action = json_encode([
-            'name' => 'edit_role',
-            'new' => $user_email
-        ]);
-
-        ProjectHistoryEditController::create($action, $project_id, $_SESSION['user']['user_id']);
+        ProjectHistoryEditController::create('Добавил роль ' . $user_email, null, $user_email, $project_id, $_SESSION['user']['user_id']);
     }
 }
 

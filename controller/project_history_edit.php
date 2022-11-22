@@ -1,12 +1,14 @@
 <?
 
 class ProjectHistoryEditController {
-    public static function create($action, $project_id, $user_id) {
-        $action = json_encode($action);
+    public static function create($name, $old, $new, $project_id, $user_id) {
+        $name = DbQuery::protectedData($name);
+        $old = DbQuery::protectedData($old);
+        $new = DbQuery::protectedData($new);
         $project_id = (int) $project_id;
         $user_id = (int) $user_id;
 
-        ProjectHistoryEdit::create($action, $project_id, $user_id);
+        ProjectHistoryEdit::create($name, $old, $new, $project_id, $user_id);
     }
 }
 

@@ -2,6 +2,8 @@
 
 class DbQuery {
     public static function protectedData($string) {
+        if (!$string) return $string;
+
         $string = trim($string);
         $string = htmlspecialchars($string);
         $string = addslashes($string);
@@ -10,9 +12,11 @@ class DbQuery {
     }
 
     public static function replacingQuotes($string) {
-        $string = htmlspecialchars(str_replace("'", '&apos;', $string));
-        $string = htmlspecialchars(str_replace('"', '&quot;', $string));
-        // $string = htmlspecialchars($string);
+        if (!$string) return $string;
+
+        $string = str_replace("'", '&apos;', $string);
+        $string = str_replace('"', '&quot;', $string);
+        $string = htmlspecialchars($string);
 
         return $string;
     }

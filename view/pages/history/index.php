@@ -4,7 +4,6 @@ $page = $_GET['page'];
 $page = $page ? $page : 1;
 $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 
-$page;
 $page_offset = ($page - 1) * 20;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
@@ -51,28 +50,33 @@ $project_list = DbQuery::getDesc('project_history_edit', 'project_history_edit_i
                                         Пользователь <?= DbQuery::parse('user', 'user_id', $project['user_id'], 'email') ?>
                                     </strong>
                                 </p>
-                                <? foreach (json_decode($project['action'], true) as $value) : ?>
-                                    <p>
+                                <p>
+                                    <? if ($project['old'] != "NULL") : ?>
                                         <span>
                                             в поле
                                         </span>
                                         <q>
-                                            <?= $value['name'] ?>
+                                            <?= $project['name'] ?>
                                         </q>
                                         <span>
                                             с
                                         </span>
                                         <q>
-                                            <?= $value['old'] ?>
+                                            <?= $project['old'] ?>
                                         </q>
                                         <span>
                                             на
                                         </span>
                                         <q>
-                                            <?= $value['new'] ?>
+                                            <?= $project['new'] ?>
                                         </q>
-                                    </p>
-                                <? endforeach; ?>
+                                    <? else : ?>
+                                        <q>
+                                            <a href="/project?id=<?= $project['project_id'] ?>">
+                                                <?= $project['name'] ?>
+                                            </a>
+                                        </q>
+                                    <? endif; ?>
                                 </p>
                             </div>
                         </div>
