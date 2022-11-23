@@ -16,8 +16,6 @@ class ProjectAccessController {
 
         if (!$user_id) return "Не выбран пользователь";
 
-        var_dump($name);
-
         return ProjectAccess::create($project_id, $name, $user_id);
     }
 
@@ -40,8 +38,6 @@ class ProjectAccessController {
 
         if (!ProjectAccessController::check('', 'all', $user_editor_access_name) && !ProjectAccessController::check('', 'edit_role', $user_editor_access_name)) return "Нет доступа";
 
-        var_dump($name);
-
         if ($name === NULL) return "Невыбран доступ";
 
         if (strpos($name, 'all') !== false) {
@@ -62,7 +58,7 @@ class ProjectAccessController {
             ProjectAccess::create($project_id, $name_protected, $user_id);
         }
 
-        ProjectHistoryEditController::create('Добавил роль ' . $user_email, null, $user_email, $project_id, $_SESSION['user']['user_id']);
+        ProjectHistoryEditController::create('Добавил роль ' . $user_email, null, $user_email, 'add', $project_id, $_SESSION['user']['user_id']);
     }
 }
 

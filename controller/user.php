@@ -1,8 +1,7 @@
 <?
 
 class UserController {
-    public static function registration($name, $email, $password, $FCs, $telephone, $about) {
-        $name = DbQuery::protectedData($name);
+    public static function registration($email, $password, $FCs, $telephone, $about) {
         $email =  DbQuery::protectedData($email);
         $password =  DbQuery::protectedData($password);
         $FCs = DbQuery::protectedData($FCs);
@@ -11,7 +10,7 @@ class UserController {
 
         if (DbQuery::get('user', 'email', $email)->num_rows > 0) return "Данный аккаунт уже существует";
 
-        if (!$name) return "Отсуствует имя";
+        if (!$FCs) return "Отсуствует ФИО";
 
         if (mb_strlen($email) < 5) return "Пароль почта 5 символов";
 
@@ -21,7 +20,7 @@ class UserController {
 
         $password = password_hash($password, PASSWORD_DEFAULT);
 
-        $user_id = User::create($name, $email, $password, $FCs, $telephone, $about);
+        $user_id = User::create($email, $password, $FCs, $telephone, $about);
 
         if (!$user_id) return "Ошибка при создании";
 

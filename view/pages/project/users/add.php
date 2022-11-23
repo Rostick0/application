@@ -8,17 +8,14 @@ $project = DbQuery::get('project', 'project_id', $project_id)->fetch_assoc();
 
 $access_list = [
     'name' => 'Название',
-    'address' => 'Адрес',
     'start_date' => 'Дата начала',
     'end_date' => 'Дата окончания',
-    'count' => 'Количество',
-    'count_defective' => 'Количество брака',
-    'price' => 'Цена',
-    'price_commission' => 'Цена с комиссией',
     'comment' => 'Комменатрий',
     'complaint' => 'Замечания',
     'add_people' => 'Добавлять людей',
     'edit_role' => 'Изменять роли',
+    'product' => 'Изменять товары',
+    'project_delete' => 'Удалить проект',
     'all' => 'Всё'
 ];
 
@@ -30,7 +27,6 @@ $access_checked = filter_input(
 );;
 
 if (isset($_REQUEST['button_edit'])) {
-    var_dump($access_checked);
     $error = ProjectAccessController::edit($project_id, $access_checked, $user_id);
 }
 

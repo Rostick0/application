@@ -38,7 +38,9 @@ $project_list = DbQuery::getDesc('project_history_edit', 'project_history_edit_i
                             <div class="card-content">
                                 <p>
                                     <strong>
-                                        Проект #<?= $project['project_id'] ?>
+                                        <a href="/project?id=<?= $project['project_id'] ?>">
+                                            Проект #<?= $project['project_id'] ?>
+                                        </a>
                                     </strong>
                                 </p>
                                 <p>
@@ -51,32 +53,27 @@ $project_list = DbQuery::getDesc('project_history_edit', 'project_history_edit_i
                                     </strong>
                                 </p>
                                 <p>
-                                    <? if ($project['old'] != "NULL") : ?>
+                                    <q>
+                                        <?= $project['name'] ?>
+                                    </q>
+                                    <? if ($project['old'] != 'NULL' && $project['new'] != 'NULL') : ?>
                                         <span>
-                                            в поле
+                                            <span>
+                                                старое значение
+                                            </span>
+                                            <q>
+                                                <?= $project['old'] ?>
+                                            </q>
                                         </span>
-                                        <q>
-                                            <?= $project['name'] ?>
-                                        </q>
                                         <span>
-                                            с
+                                            <span>
+                                                Новое значение
+                                            </span>
+                                            <q>
+                                                <?= $project['new'] ?>
+                                            </q>
                                         </span>
-                                        <q>
-                                            <?= $project['old'] ?>
-                                        </q>
-                                        <span>
-                                            на
-                                        </span>
-                                        <q>
-                                            <?= $project['new'] ?>
-                                        </q>
-                                    <? else : ?>
-                                        <q>
-                                            <a href="/project?id=<?= $project['project_id'] ?>">
-                                                <?= $project['name'] ?>
-                                            </a>
-                                        </q>
-                                    <? endif; ?>
+                                    <? endif ?>
                                 </p>
                             </div>
                         </div>

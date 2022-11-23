@@ -2,6 +2,6 @@
 
 $_SESSION['user'] = null;
 
-header('Location: "/"');
+header('Location: /');
 
 ?>

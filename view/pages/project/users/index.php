@@ -64,7 +64,7 @@ if ($user_email) {
                                 </div>
                             </div>
                             <div class="card-action">
-                                <a href="/project/users/add?id=<?= $user['user_id'] ?>&project_id<?= $project_id ?>">
+                                <a href="/project/users/add?id=<?= $user['user_id'] ?>&project_id=<?= $project_id ?>">
                                     Изменить роль
                                 </a>
                             </div>

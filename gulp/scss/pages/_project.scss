@@ -41,7 +41,10 @@
             column-gap: 20px;
         }
 
-        button {
+        &_inner,
+        & > * {
+            display: inline-block;
+
             position: sticky;
             left: 0;
         }

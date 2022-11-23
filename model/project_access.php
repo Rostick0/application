@@ -21,8 +21,6 @@ class ProjectAccess {
         VALUES
         ('$project_id','$name','$user_id')");
 
-        var_dump($db_connect->error);
-
         return $query;
     }
 
@@ -30,8 +28,6 @@ class ProjectAccess {
         global $db_connect;
 
         $query = $db_connect->query("UPDATE `project_access` SET `name`='$name' WHERE `project_id`='$project_id' AND `user_id`='$user_id'");
-
-        var_dump($db_connect->error);
 
         return $query;
     }
