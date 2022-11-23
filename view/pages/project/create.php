@@ -96,14 +96,6 @@ if (isset($button_create)) {
                         </div>
                         <div class="project__flex">
                             <div class="input-field col s12">
-                                <select name="project_manager">
-                                    <? foreach ($users as $value) : ?>
-                                        <option value="<?= $value['user_id'] ?>"><?= $value['email'] ?></option>
-                                    <? endforeach; ?>
-                                </select>
-                                <label>Выбрать менеджера</label>
-                            </div>
-                            <div class="input-field col s12">
                                 <input class="validate" id="project_name" type="text" name="project_name">
                                 <label for="project_name">Название*</label>
                             </div>

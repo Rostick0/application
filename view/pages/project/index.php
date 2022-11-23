@@ -56,14 +56,6 @@ if (!$project) {
                         <div class="project__flex">
                             <div class="input-field col s12">
                                 <strong>
-                                    Менеджер
-                                </strong>
-                                <p>
-                                    Пока в разработке
-                                </p>
-                            </div>
-                            <div class="input-field col s12">
-                                <strong>
                                     Название
                                 </strong>
                                 <p>

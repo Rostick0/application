@@ -150,23 +150,6 @@ if (isset($button_delete)) {
                         </div>
                         <div class="project__flex">
                             <div class="input-field col s12">
-                                <? if (array_search('manager', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
-                                    <select name="project_manager">
-                                        <? foreach ($users as $value) : ?>
-                                            <option value="<?= $value['user_id'] ?>"><?= $value['email'] ?></option>
-                                        <? endforeach; ?>
-                                    </select>
-                                    <label>Выбрать менеджера</label>
-                                <? else : ?>
-                                    <strong>
-                                        Менеджер
-                                    </strong>
-                                    <p>
-                                        Пока в разработке
-                                    </p>
-                                <? endif; ?>
-                            </div>
-                            <div class="input-field col s12">
                                 <? if (array_search('name', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                     <input class="validate" id="project_name" type="text" name="project_name" value="<?= $project['name'] ?>">
                                     <label for="project_name">Название*</label>
