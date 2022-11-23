@@ -77,17 +77,15 @@ class ProjectController
             'documents'
         );
 
-        $access_array_name = json_decode($access_array['name'], true);
-
         $project_old = DbQuery::get('project', 'project_id', $project_id)->fetch_assoc();
 
         $action_edit = [];
 
-        $user_power = DbQuery::parse('role', 'role_id', $_SESSION['user']['role_id'], 'power');
+        $user_power = (int) DbQuery::parse('role', 'role_id', $_SESSION['user']['role_id'], 'power');
 
         foreach ($data_type as $type => $value) {
-            if ($access_array_name[0] != 'all' || $user_power < 20) {
-                if (!ProjectAccessController::check($value, $type, $access_array_name)) {
+            if ($access_array[0] != 'all' || $user_power < 20) {
+                if (!ProjectAccessController::check($value, $type, $access_array)) {
                     $data_type[$type] = $project_old[$type];
                     continue;
                 }
@@ -104,8 +102,6 @@ class ProjectController
 
         if (strlen($data_type['name']) < 3) return "Название компании меньше 3 символов";
 
-        if (!$data_type['address']) return "Не указан адрес";
-
         if (!$data_type['inn']) return "Отсуствует ИНН";
 
         $query = Project::edit($project_id, $data_type['name'], $data_type['contract'], $data_type['address'], $data_type['inn'], $data_type['start_date'], $data_type['end_date'], $data_type['comment'], $data_type['complaint'], $data_type['zmo_id'], $data_type['is_made_order'], $data_type['document_scan'], $data_type['documents']);
@@ -117,6 +113,8 @@ class ProjectController
         foreach ($action_edit as $action) {
             ProjectHistoryEditController::create($action['name'], $action['old'], $action['new'], $project_id, $_SESSION['user']['user_id']);
         }
+
+        header('Refresh: 0');
     }
 
     public static function setReady($project_id, $is_ready)
@@ -153,7 +151,20 @@ class ProjectController
         return $old == $new;
     }
 
-    public static function renderEditInput($acces_array, $user_power)
-    {
+    
+    public static function delete($project_id, $access_array) {
+        $project_id = (int) $project_id;
+
+        $user_power = (int) DbQuery::parse('role', 'role_id', $_SESSION['user']['role_id'], 'power');
+
+        if ($access_array[0] != 'all' || $user_power < 20) return "Ошибка при удалении";
+
+        $query = Project::delete($project_id);
+
+        if (!$query) return "Ошибка при удалении";
+
+        ProjectHistoryEditController::create('Удалил проект ' . $project_id, null, null, $project_id, $_SESSION['user']['user_id']);
     }
 }
+
+?>

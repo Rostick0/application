@@ -4,7 +4,9 @@ class Project {
     public static function getMy($user_id, $limit = 20, $offset = 0) {
         global $db_connect;
 
-        return $db_connect->query("SELECT * FROM `project` WHERE `project_id` IN (SELECT `project_id` FROM `project_access` WHERE `user_id` = '$user_id') ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
+        $query = $db_connect->query("SELECT * FROM `project` WHERE `project_id` IN (SELECT `project_id` FROM `project_access` WHERE `user_id` = '$user_id') ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
+
+        return $query;
     }
 
     public static function create($name, $contract, $address, $inn, $start_date, $end_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0, $is_ready = 0) {
@@ -39,16 +41,28 @@ class Project {
         $comment = !empty($comment) ? "'$comment'" : "NULL";
         $complaint = !empty($complaint) ? "'$complaint'" : "NULL";
 
-        return $db_connect->query("UPDATE `project`
+        $query = $db_connect->query("UPDATE `project`
         SET
-        `name`='$name',`contract`='$contract',`address`='$address',`inn`='$inn',`start_date`=$start_date,`end_date`=$end_date,`comment`=$comment,`complaint`=$complaint,`is_made_order`='$is_made_order',`zmo_id`='$zmo_id',`$document_scan`='document_scan',`documents`='$documents'
+        `name`='$name',`contract`=$contract,`address`=$address,`inn`='$inn',`start_date`=$start_date,`end_date`=$end_date,`comment`=$comment,`complaint`=$complaint,`is_made_order`='$is_made_order',`zmo_id`='$zmo_id',`document_scan`='$document_scan',`documents`='$documents'
         WHERE `project_id` = '$project_id'");
+
+        var_dump($db_connect->error);
+
+        return $query;
     }
 
     public static function setReady($project_id, $is_ready) {
         global $db_connect;
 
         return $db_connect->query("UPDATE `project` SET `is_ready` = '$is_ready' WHERE `project_id` = '$project_id'");
+    }
+
+    public static function delete($project_id) {
+        global $db_connect;
+
+        $db_connect->query("DELETE FROM `product` WHERE = `project_id` = '$project_id'");
+        $db_connect->query("DELETE FROM `project_access` WHERE = `project_id` = '$project_id'");
+        return $db_connect->query("DELETE FROM `project` WHERE = `project_id` = '$project_id'");
     }
 }
 

@@ -13,8 +13,6 @@ $zmo = DbQuery::get('zmo');
 $status_delivery = DbQuery::get('status_delivery');
 $status_payment = DbQuery::get('status_payment');
 
-var_dump($project);
-
 $is_made_order = $_REQUEST['project_is_made_order'];
 $documents = $_REQUEST['project_documents'];
 $document_scan = $_REQUEST['project_document_scan'];
@@ -28,27 +26,40 @@ $end_date = $_REQUEST['project_end_date'];
 $comment = $_REQUEST['project_comment'];
 $complaint = $_REQUEST['project_complaint'];
 
-$button_create = $_REQUEST['button_create'];
+$button_edit = $_REQUEST['button_edit'];
 
 $my_access = ProjectAccessController::getMy($project_id)->fetch_assoc();
 $my_acces_array = json_decode($my_access['name'], true);
 
-$products = [
-    $_REQUEST['product_name'],
-    $_REQUEST['product_address_from'],
-    $_REQUEST['product_address_to'],
-    $_REQUEST['product_count'],
-    $_REQUEST['product_unit_measurement'],
-    $_REQUEST['product_price'],
-    $_REQUEST['product_amount'],
-    $_REQUEST['product_purchase_price'],
-    $_REQUEST['product_purchase_amount'],
-    $_REQUEST['product_status_delivery'],
-    $_REQUEST['product_status_payment'],
-];
+$products = [];
+$can_add_product = false;
 
-if (isset($button_create)) {
-    // $error = ProjectController::create($name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, 0, $products);
+if ((array_search('all', $my_acces_array) !== false) || array_search('product', $my_acces_array) !== false ) {
+    $can_add_product = true;
+
+    $products = [
+        $_REQUEST['product_name'],
+        $_REQUEST['product_address_from'],
+        $_REQUEST['product_address_to'],
+        $_REQUEST['product_count'],
+        $_REQUEST['product_unit_measurement'],
+        $_REQUEST['product_price'],
+        $_REQUEST['product_amount'],
+        $_REQUEST['product_purchase_price'],
+        $_REQUEST['product_purchase_amount'],
+        $_REQUEST['product_status_delivery'],
+        $_REQUEST['product_status_payment'],
+    ];
+}
+
+if (isset($button_edit)) {
+    $error = ProjectController::edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $my_acces_array);
+}
+
+$button_delete = $_REQUEST['button_delete'];
+
+if (isset($button_delete)) {
+    $error = ProjectController::delete($project_id, $my_acces_array);
 }
 
 ?>
@@ -61,7 +72,7 @@ if (isset($button_create)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <? require_once './view/components/style.php'; ?>
-    <title>Создание проекта</title>
+    <title>Редактирование проекта</title>
 </head>
 
 <body>
@@ -81,7 +92,7 @@ if (isset($button_create)) {
                         <div class="project__flex">
                             <? if (array_search('is_made_order', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                 <label class="project__is-ready">
-                                    <input type="checkbox" class="filled-in" name="project_is_made_order">
+                                    <input type="checkbox" class="filled-in" name="project_is_made_order" <?= $project['is_made_order'] ? 'checked' : '' ?>>
                                     <span class="project__is-ready_text">
                                         <span class="project__is-ready_text">
                                             Заказ сделан?
@@ -98,7 +109,7 @@ if (isset($button_create)) {
                             <? endif; ?>
                             <? if (array_search('documents', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                 <label class="project__is-ready">
-                                    <input type="checkbox" class="filled-in" name="project_documents">
+                                    <input type="checkbox" class="filled-in" name="project_documents" <?= $project['documents'] ? 'checked' : '' ?>>
                                     <span class="project__is-ready_text">
                                         <span class="project__is-ready_text">
                                             Документы готовы?
@@ -117,7 +128,7 @@ if (isset($button_create)) {
                         <div class="project__flex">
                             <? if (array_search('document_scan', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                 <label class="project__is-ready">
-                                    <input type="checkbox" class="filled-in" name="project_document_scan">
+                                    <input type="checkbox" class="filled-in" name="project_document_scan" <?= $project['document_scan'] ? 'checked' : '' ?>>
                                     <span class="project__is-ready_text">
                                         <span class="project__is-ready_text">
                                             Скан документов готов?
@@ -153,7 +164,7 @@ if (isset($button_create)) {
                             </div>
                             <div class="input-field col s12">
                                 <? if (array_search('name', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
-                                    <input class="validate" id="project_name" type="text" name="project_name">
+                                    <input class="validate" id="project_name" type="text" name="project_name" value="<?= $project['name'] ?>">
                                     <label for="project_name">Название*</label>
                                 <? else : ?>
                                     <strong>
@@ -196,7 +207,7 @@ if (isset($button_create)) {
                                 <? if (array_search('zmo_id', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                     <select name="project_zmo">
                                         <? foreach ($zmo as $value) : ?>
-                                            <option value="<?= $value['zmo_id'] ?>"><?= $value['name'] ?></option>
+                                            <option value="<?= $value['zmo_id'] ?>" <?= $project['zmo_id'] == $value['zmo_id'] ? 'selected' : '' ?>><?= $value['name'] ?></option>
                                         <? endforeach; ?>
                                     </select>
                                     <label>ЗМО</label>
@@ -213,27 +224,27 @@ if (isset($button_create)) {
                         <div class="project__flex">
                             <div class="input-field col s12">
                                 <? if (array_search('start_date', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
-                                    <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" value="<?= DateEditor::normalizeDate($start_date, true) ?>" readonly>
+                                    <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" value="<?= DateEditor::normalizeDate($project['start_date'], true) ?>" readonly>
                                     <label for="project_start_date">Дата начала*</label>
                                 <? else : ?>
                                     <strong>
                                         Дата начала
                                     </strong>
                                     <p>
-                                        <?= DateEditor::normalizeDate($start_date, true) ?>
+                                        <?= DateEditor::normalizeDate($project['start_date'], true) ?>
                                     </p>
                                 <? endif; ?>
                             </div>
                             <div class="input-field col s12">
                                 <? if (array_search('end_date', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
-                                    <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" value="<?= DateEditor::normalizeDate($end_date, true) ?>" readonly>
+                                    <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" value="<?= DateEditor::normalizeDate($project['end_date'], true) ?>" readonly>
                                     <label for="project_end_date">Дата окончания*</label>
                                 <? else : ?>
                                     <strong>
-                                        Дата начала
+                                        Дата окончания
                                     </strong>
                                     <p>
-                                        <?= DateEditor::normalizeDate($end_date, true) ?>
+                                        <?= DateEditor::normalizeDate($project['end_date'], true) ?>
                                     </p>
                                 <? endif; ?>
                             </div>
@@ -260,7 +271,7 @@ if (isset($button_create)) {
                                     <label for="project_complaint">Замечания</label>
                                 <? else : ?>
                                     <strong>
-                                        Комментарий
+                                        Замечания
                                     </strong>
                                     <p>
                                         <?= $project['complaint'] ?>
@@ -268,14 +279,19 @@ if (isset($button_create)) {
                                 <? endif; ?>
                             </div>
                         </div>
-                        <div class="project__button project__button_add">
-                            <button class="waves-effect waves-light btn-large blue darken-1 product_add">
-                                Добавить товар
-                            </button>
-                        </div>
+                        <? if ($can_add_product): ?>
+                            <div class="project__button project__button_add">
+                                <button class="waves-effect waves-light btn-large blue darken-1 product_add">
+                                    Добавить товар
+                                </button>
+                            </div>
+                        <? endif; ?>
                         <div class="project__button">
-                            <button class="waves-effect waves-light btn-large blue darken-1" name="button_create">
+                            <button class="waves-effect waves-light btn-large blue darken-1" name="button_edit">
                                 Изменить
+                            </button>
+                            <button class="waves-effect waves-light btn-large red darken-1" name="button_delete">
+                                Удалить
                             </button>
                         </div>
                     </form>

@@ -3,12 +3,14 @@
 $name = $_REQUEST['user_name'];
 $email = $_REQUEST['user_email'];
 $password = $_REQUEST['user_password'];
+$FCs = $_REQUEST['user_FCs'];
+$telephone = $_REQUEST['user_telephone'];
 $about = $_REQUEST['user_about'];
 
 $button_reg = $_REQUEST['button_reg'];
 
 if (isset($button_reg)) {
-    $error = UserController::registration($name, $email, $password, $about);
+    $error = UserController::registration($name, $email, $password, $FCs, $telephone, $about);
 }
 
 ?>
@@ -43,6 +45,17 @@ if (isset($button_reg)) {
                     <div class="input-field col s12">
                         <input class="validate" id="user_password" type="password" name="user_password">
                         <label for="user_password">Пароль*</label>
+                    </div>
+                    <p>
+                        Контактная информация
+                    </p>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_FCs" type="text" name="user_FCs">
+                        <label for="user_FCs">ФИО</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_telephone" type="tel" name="user_telephone">
+                        <label for="user_telephone">Телефон</label>
                     </div>
                     <div class="input-field col s12">
                         <textarea id="user_about" class="materialize-textarea" name="user_about"></textarea>

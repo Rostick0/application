@@ -1,12 +1,14 @@
 <?
 
 class User {
-    public static function create($name, $email, $password, $about = null) {
+    public static function create($name, $email, $password, $FCs, $telephone, $about = null) {
         global $db_connect;
 
+        $FCs = !empty($FCs) ? "'$FCs'" : "NULL";
+        $telephone = !empty($telephone) ? "'$telephone'" : "NULL";
         $about = !empty($about) ? "'$about'" : "NULL";
 
-        $query = $db_connect->query("INSERT INTO `user` (`name`, `email`, `password`, `about`) VALUES ('$name', '$email', '$password', $about)");
+        $query = $db_connect->query("INSERT INTO `user` (`name`, `email`, `password`, `FCs`, `telephone` `about`) VALUES ('$name', '$email', '$password', '$FCs', '$telephone', $about)");
 
         if ($query) {
             return mysqli_insert_id($db_connect);

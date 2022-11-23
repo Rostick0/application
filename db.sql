@@ -1,25 +1,6 @@
--- phpMyAdmin SQL Dump
--- version 5.1.3
--- https://www.phpmyadmin.net/
---
--- Хост: 127.0.0.1:3306
--- Время создания: Ноя 21 2022 г., 17:10
--- Версия сервера: 5.7.38
--- Версия PHP: 7.4.29
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- База данных: `application`
---
 
 -- --------------------------------------------------------
 
@@ -34,7 +15,27 @@ CREATE TABLE `authorization` (
   `info` text,
   `ip` varchar(255) NOT NULL,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
+
+--
+-- Структура таблицы `product`
+--
+
+CREATE TABLE `product` (
+  `product_id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `address_from` varchar(255) DEFAULT NULL,
+  `address_to` varchar(255) DEFAULT NULL,
+  `count` float DEFAULT NULL,
+  `unit_measurement` varchar(255) DEFAULT NULL,
+  `price` float DEFAULT NULL,
+  `amount` float DEFAULT NULL,
+  `purchase_price` float DEFAULT NULL,
+  `purchase_amount` float DEFAULT NULL,
+  `status_delivery` int(11) DEFAULT '1',
+  `status_payment` int(11) DEFAULT '1',
+  `project_id` int(11) NOT NULL
+);
 
 -- --------------------------------------------------------
 
@@ -45,24 +46,21 @@ CREATE TABLE `authorization` (
 CREATE TABLE `project` (
   `project_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `address` varchar(255) NOT NULL,
+  `contract` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
   `inn` varchar(255) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `count` int(11) DEFAULT NULL,
-  `count_defective` int(11) DEFAULT NULL,
-  `price` float DEFAULT NULL,
-  `price_commission` float DEFAULT NULL,
   `comment` text,
   `complaint` text,
+  `zmo_id` int(11) NOT NULL,
+  `is_made_order` tinyint(1) NOT NULL DEFAULT '0',
+  `document_scan` tinyint(1) NOT NULL DEFAULT '0',
+  `documents` tinyint(1) NOT NULL DEFAULT '0',
   `is_ready` tinyint(1) NOT NULL DEFAULT '0',
-  `is_finally` tinyint(1) NOT NULL DEFAULT '0',
-  `status_payment_id` int(11) NOT NULL DEFAULT '1',
-  `status_delivery_id` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
+  `is_finally` tinyint(1) NOT NULL DEFAULT '0'
+);
 
 --
 -- Структура таблицы `project_access`
@@ -74,16 +72,7 @@ CREATE TABLE `project_access` (
   `name` json NOT NULL,
   `role_id` int(11) NOT NULL DEFAULT '1',
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Дамп данных таблицы `project_access`
---
-
-INSERT INTO `project_access` (`project_access_id`, `project_id`, `name`, `role_id`, `user_id`) VALUES
-(1, 3, '[\"address\", \"count\"]', 2, 1),
-(2, 2, '[\"all\"]', 2, 1),
-(3, 2, '[\"address\"]', 1, 2);
+);
 
 -- --------------------------------------------------------
 
@@ -93,11 +82,13 @@ INSERT INTO `project_access` (`project_access_id`, `project_id`, `name`, `role_i
 
 CREATE TABLE `project_history_edit` (
   `project_history_edit_id` int(11) NOT NULL,
-  `action` json NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `old` text,
+  `new` text,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `project_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- --------------------------------------------------------
 
@@ -109,7 +100,7 @@ CREATE TABLE `role` (
   `role_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `power` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 --
 -- Дамп данных таблицы `role`
@@ -129,7 +120,7 @@ INSERT INTO `role` (`role_id`, `name`, `power`) VALUES
 CREATE TABLE `status_delivery` (
   `status_delivery_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 --
 -- Дамп данных таблицы `status_delivery`
@@ -149,7 +140,7 @@ INSERT INTO `status_delivery` (`status_delivery_id`, `name`) VALUES
 CREATE TABLE `status_payment` (
   `status_payment_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 --
 -- Дамп данных таблицы `status_payment`
@@ -170,13 +161,32 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `FCs` varchar(255) DEFAULT NULL,
+  `telephone` varchar(15) DEFAULT NULL,
   `about` text,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_online` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `role_id` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
+--
+-- Структура таблицы `zmo`
+--
 
+CREATE TABLE `zmo` (
+  `zmo_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+);
+
+--
+-- Дамп данных таблицы `zmo`
+--
+
+INSERT INTO `zmo` (`zmo_id`, `name`) VALUES
+(1, 'прямой'),
+(2, '44-ФЗ');
+
+--
 -- Индексы сохранённых таблиц
 --
 
@@ -186,6 +196,12 @@ CREATE TABLE `user` (
 ALTER TABLE `authorization`
   ADD PRIMARY KEY (`authorization_id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Индексы таблицы `product`
+--
+ALTER TABLE `product`
+  ADD PRIMARY KEY (`product_id`);
 
 --
 -- Индексы таблицы `project`
@@ -234,6 +250,12 @@ ALTER TABLE `user`
   ADD KEY `role_id` (`role_id`);
 
 --
+-- Индексы таблицы `zmo`
+--
+ALTER TABLE `zmo`
+  ADD PRIMARY KEY (`zmo_id`);
+
+--
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
@@ -242,6 +264,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `authorization`
   MODIFY `authorization_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `product`
+--
+ALTER TABLE `product`
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `project`
@@ -286,6 +314,12 @@ ALTER TABLE `user`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT для таблицы `zmo`
+--
+ALTER TABLE `zmo`
+  MODIFY `zmo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Ограничения внешнего ключа сохраненных таблиц
 --
 
@@ -309,7 +343,3 @@ ALTER TABLE `project_access`
 ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
