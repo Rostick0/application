@@ -13,7 +13,7 @@ CREATE TABLE `authorization` (
   `info` text,
   `ip` varchar(255) NOT NULL,
   `user_id` int(11) NOT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Структура таблицы `product`
@@ -22,6 +22,7 @@ CREATE TABLE `authorization` (
 CREATE TABLE `product` (
   `product_id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `track_number` varchar(255) DEFAULT NULL,
   `address_from` varchar(255) DEFAULT NULL,
   `address_to` varchar(255) DEFAULT NULL,
   `count` float DEFAULT NULL,
@@ -32,10 +33,12 @@ CREATE TABLE `product` (
   `purchase_amount` float DEFAULT NULL,
   `status_delivery` int(11) DEFAULT '1',
   `status_payment` int(11) DEFAULT '1',
+  `document` varchar(255) DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `shipping_cost` float DEFAULT NULL,
+  `status_exploitation` int(11) NOT NULL DEFAULT '1',
   `project_id` int(11) NOT NULL
-);
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Структура таблицы `project`
@@ -58,9 +61,8 @@ CREATE TABLE `project` (
   `documents` tinyint(1) NOT NULL DEFAULT '0',
   `is_ready` tinyint(1) NOT NULL DEFAULT '0',
   `is_finally` tinyint(1) NOT NULL DEFAULT '0'
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
 
 --
 -- Структура таблицы `project_access`
@@ -72,9 +74,7 @@ CREATE TABLE `project_access` (
   `name` json NOT NULL,
   `role_id` int(11) NOT NULL DEFAULT '1',
   `user_id` int(11) NOT NULL
-);
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Структура таблицы `project_history_edit`
@@ -89,9 +89,7 @@ CREATE TABLE `project_history_edit` (
   `type` varchar(255) NOT NULL,
   `project_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
-);
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Структура таблицы `role`
@@ -101,7 +99,7 @@ CREATE TABLE `role` (
   `role_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `power` int(11) NOT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `role`
@@ -121,7 +119,7 @@ INSERT INTO `role` (`role_id`, `name`, `power`) VALUES
 CREATE TABLE `status_delivery` (
   `status_delivery_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `status_delivery`
@@ -135,13 +133,34 @@ INSERT INTO `status_delivery` (`status_delivery_id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `status_exploitation`
+--
+
+CREATE TABLE `status_exploitation` (
+  `status_exploitation_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Дамп данных таблицы `status_exploitation`
+--
+
+INSERT INTO `status_exploitation` (`status_exploitation_id`, `name`) VALUES
+(1, 'Разгрузка'),
+(2, 'Сборка'),
+(3, 'Монтаж'),
+(4, 'Установка');
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `status_payment`
 --
 
 CREATE TABLE `status_payment` (
   `status_payment_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `status_payment`
@@ -162,14 +181,13 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `FCs` varchar(255) DEFAULT NULL,
+  `post` varchar(255) NOT NULL,
   `telephone` varchar(15) DEFAULT NULL,
   `about` text,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_online` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `role_id` int(11) NOT NULL DEFAULT '1'
-);
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Структура таблицы `zmo`
@@ -178,7 +196,7 @@ CREATE TABLE `user` (
 CREATE TABLE `zmo` (
   `zmo_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `zmo`
@@ -237,6 +255,12 @@ ALTER TABLE `role`
 --
 ALTER TABLE `status_delivery`
   ADD PRIMARY KEY (`status_delivery_id`);
+
+--
+-- Индексы таблицы `status_exploitation`
+--
+ALTER TABLE `status_exploitation`
+  ADD PRIMARY KEY (`status_exploitation_id`);
 
 --
 -- Индексы таблицы `status_payment`
@@ -304,6 +328,12 @@ ALTER TABLE `status_delivery`
   MODIFY `status_delivery_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT для таблицы `status_exploitation`
+--
+ALTER TABLE `status_exploitation`
+  MODIFY `status_exploitation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT для таблицы `status_payment`
 --
 ALTER TABLE `status_payment`
@@ -313,7 +343,7 @@ ALTER TABLE `status_payment`
 -- AUTO_INCREMENT для таблицы `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `zmo`
@@ -345,3 +375,7 @@ ALTER TABLE `project_access`
 ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`);
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
