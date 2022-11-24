@@ -7,10 +7,17 @@ $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 $page_offset = ($page - 1) * 20;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
-$project_count = DbQuery::get('project')->num_rows;
+$project_count = DbQuery::get('project_history_edit')->num_rows;
 $page_count = ceil($project_count / 20);
 
 $project_list = DbQuery::getDesc('project_history_edit', 'project_history_edit_id', 20, $page_offset);
+
+$search = $_GET['project_history_search'];
+
+if ($search) {
+    $project_list = ProjectHistoryEditController::search($search, $search, 20, $page_offset);
+}
+
 
 ?>
 
@@ -32,13 +39,25 @@ $project_list = DbQuery::getDesc('project_history_edit', 'project_history_edit_i
                 <? require_once './view/components/header_navigation.php'; ?>
             </header>
             <div class="container">
+                <form class="users__form" method="GET">
+                    <div class="users__input input-field">
+                        <input class="validate" id="project_history_search" type="text" name="project_history_search">
+                        <label for="project_history_search">Поиск по названию и id проекта</label>
+                    </div>
+                    <button class="btn waves-effect waves-light blue darken-1" type="submit">
+                        <span>
+                            Поиск
+                        </span>
+                        <i class="material-icons right">send</i>
+                    </button>
+                </form>
                 <? foreach ($project_list as $project) : ?>
                     <div class="col s12 m7">
-                        <div class="card">
+                        <div class="card <?= ProjectController::checkDate(DbQuery::parse('project', 'project_id', $project['project_id'], 'start_date'), DbQuery::parse('project', 'project_id', $project['project_id'], 'is_ready')) ?>">
                             <div class="card-content">
                                 <p>
                                     <strong>
-                                        <a href="/project?id=<?= $project['project_id'] ?>">
+                                        <a class="card__link" href="/project?id=<?= $project['project_id'] ?>">
                                             Проект #<?= $project['project_id'] ?>
                                         </a>
                                     </strong>
@@ -49,7 +68,7 @@ $project_list = DbQuery::getDesc('project_history_edit', 'project_history_edit_i
                                 <p>
                                 <p>
                                     <strong>
-                                        Пользователь <?= DbQuery::parse('user', 'user_id', $project['user_id'], 'email') ?>
+                                        <?= DbQuery::parse('user', 'user_id', $project['user_id'], 'FCs') . " " . DbQuery::parse('user', 'user_id', $project['user_id'], 'post') ?>
                                     </strong>
                                 </p>
                                 <p>

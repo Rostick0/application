@@ -11,6 +11,15 @@ class ProjectHistoryEditController {
 
         ProjectHistoryEdit::create($name, $old, $new, $type, $project_id, $user_id);
     }
+
+    public static function search($name, $project_id, $limit, $offset) {
+        $name = DbQuery::protectedData($name);
+        $project_id = (int) $project_id;
+        $limit = (int) $limit;
+        $offset = (int) $offset;
+
+        return ProjectHistoryEdit::search($name, $project_id, $limit, $offset);
+    }
 }
 
 ?>

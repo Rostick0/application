@@ -1,10 +1,11 @@
 <?
 
 class Product {
-    public static function create($name, $address_from, $address_to, $count, $unit_measurement,	$price, $amount, $purchase_price, $purchase_amount, $status_delivery = 1, $status_payment = 1, $project_id) {
+    public static function create($name, $track_number, $address_from, $address_to, $count, $unit_measurement,	$price, $amount, $purchase_price, $purchase_amount, $status_delivery = 1, $status_payment = 1, $project_id) {
         global $db_connect;
 
         $name = !empty($name) ? "'$name'" : "NULL";
+        $track_number = !empty($track_number) ? "'$track_number'" : "NULL";
         $address_from = !empty($address_from) ? "'$address_from'" : "NULL";
         $address_to = !empty($address_to) ? "'$address_to'" : "NULL";
         $count = !empty($count) ? "'$count'" : "NULL";
@@ -15,15 +16,16 @@ class Product {
         $purchase_amount = !empty($purchase_amount) ? "'$purchase_amount'" : "NULL";
 
         return $db_connect->query("INSERT INTO
-        `product`(`name`, `address_from`, `address_to`,`count`, `unit_measurement`, `price`, `amount`, `purchase_price`, `purchase_amount`, `status_delivery`, `status_payment`, `project_id`)
+        `product`(`name`, `track_number`,`address_from`, `address_to`,`count`, `unit_measurement`, `price`, `amount`, `purchase_price`, `purchase_amount`, `status_delivery`, `status_payment`, `project_id`)
         VALUES
-        ($name,$address_from,$address_to,$count,$unit_measurement,$price,$amount,$purchase_price,$purchase_amount,'$status_delivery','$status_payment','$project_id')");
+        ($name,$track_number,$address_from,$address_to,$count,$unit_measurement,$price,$amount,$purchase_price,$purchase_amount,'$status_delivery','$status_payment','$project_id')");
     }
 
-    public static function update($product_id, $name, $address_from, $address_to, $count, $unit_measurement, $price, $amount, $purchase_price, $purchase_amount, $status_delivery = 1, $status_payment = 1) {
+    public static function update($product_id, $name, $track_number, $address_from, $address_to, $count, $unit_measurement, $price, $amount, $purchase_price, $purchase_amount, $status_delivery = 1, $status_payment = 1) {
         global $db_connect;
 
         $name = !empty($name) ? "'$name'" : "NULL";
+        $track_number = !empty($track_number) ? "'$track_number'" : "NULL";
         $address_from = !empty($address_from) ? "'$address_from'" : "NULL";
         $address_to = !empty($address_to) ? "'$address_to'" : "NULL";
         $count = !empty($count) ? "'$count'" : "NULL";
@@ -34,7 +36,7 @@ class Product {
         $purchase_amount = !empty($purchase_amount) ? "'$purchase_amount'" : "NULL";
 
         $query = $db_connect->query("UPDATE `product` SET
-                    `name`=$name,`address_from`=$address_from,`address_to`=$address_to,`count`=$count,`unit_measurement`=$unit_measurement,`price`=$price,`amount`=$amount,`purchase_price`=$purchase_price,`purchase_amount`=$purchase_amount,`status_delivery`='$status_delivery',`status_payment`='$status_payment'
+                    `name`=$name,`track_number`=$track_number,`address_from`=$address_from,`address_to`=$address_to,`count`=$count,`unit_measurement`=$unit_measurement,`price`=$price,`amount`=$amount,`purchase_price`=$purchase_price,`purchase_amount`=$purchase_amount,`status_delivery`='$status_delivery',`status_payment`='$status_payment'
                     WHERE `product_id` = '$product_id'");
 
         return $query;

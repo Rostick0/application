@@ -1,16 +1,19 @@
 <?
 
 class UserController {
-    public static function registration($email, $password, $FCs, $telephone, $about) {
+    public static function registration($email, $password, $FCs, $post, $telephone, $about) {
         $email =  DbQuery::protectedData($email);
         $password =  DbQuery::protectedData($password);
         $FCs = DbQuery::protectedData($FCs);
+        $post = DbQuery::protectedData($post);
         $telephone = DbQuery::protectedData($telephone);
         $about =  DbQuery::protectedData($about);
 
         if (DbQuery::get('user', 'email', $email)->num_rows > 0) return "Данный аккаунт уже существует";
 
         if (!$FCs) return "Отсуствует ФИО";
+
+        if (!$post) return "Отсуствует должность";
 
         if (mb_strlen($email) < 5) return "Пароль почта 5 символов";
 
@@ -20,7 +23,7 @@ class UserController {
 
         $password = password_hash($password, PASSWORD_DEFAULT);
 
-        $user_id = User::create($email, $password, $FCs, $telephone, $about);
+        $user_id = User::create($email, $password, $FCs, $post, $telephone, $about);
 
         if (!$user_id) return "Ошибка при создании";
 
@@ -57,12 +60,12 @@ class UserController {
         header('Location: /');
     }
 
-    public static function search($email, $limit = 20, $offset = 0) {
-        $email = DbQuery::protectedData($email);
+    public static function search($FCs, $limit = 20, $offset = 0) {
+        $FCs = DbQuery::protectedData($FCs);
         $limit = (int) $limit;
         $offset = (int) $offset;
 
-        return User::search($email, $limit, $offset);
+        return User::search($FCs, $limit, $offset);
     }
 }
 

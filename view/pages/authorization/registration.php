@@ -3,13 +3,14 @@
 $email = $_REQUEST['user_email'];
 $password = $_REQUEST['user_password'];
 $FCs = $_REQUEST['user_FCs'];
+$post = $_REQUEST['user_post'];
 $telephone = $_REQUEST['user_telephone'];
 $about = $_REQUEST['user_about'];
 
 $button_reg = $_REQUEST['button_reg'];
 
 if (isset($button_reg)) {
-    $error = UserController::registration($email, $password, $FCs, $telephone, $about);
+    $error = UserController::registration($email, $password, $FCs, $post, $telephone, $about);
 }
 
 ?>
@@ -47,6 +48,10 @@ if (isset($button_reg)) {
                     <div class="input-field col s12">
                         <input class="validate" id="user_FCs" type="text" name="user_FCs">
                         <label for="user_FCs">ФИО</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <input class="validate" id="user_post" type="text" name="user_post">
+                        <label for="user_post">Должность</label>
                     </div>
                     <div class="input-field col s12">
                         <input class="validate" id="user_telephone" type="tel" name="user_telephone">

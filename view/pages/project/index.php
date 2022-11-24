@@ -9,6 +9,8 @@ if (!$project) {
     header('Location: /project/create');
 }
 
+$contract_amount = 0;
+
 ?>
 
 <!DOCTYPE html>
@@ -72,7 +74,7 @@ if (!$project) {
                             </div>
                             <div class="input-field col s12">
                                 <strong>
-                                    Договор
+                                    Номер договора
                                 </strong>
                                 <p>
                                     <?= HtmlDom::checkData($project['contract']) ?>
@@ -107,6 +109,18 @@ if (!$project) {
                                 </p>
                             </div>
                         </div>
+                        <? if ($contract_amount): ?>
+                            <div class="input-field col s12">
+                                <div class="input-field col s12">
+                                    <strong>
+                                        Сумма контракта
+                                    </strong>
+                                    <p>
+                                        <?= $contract_amount ?>
+                                    </p>
+                                </div>
+                            </div>
+                        <? endif ?>
                         <div class="input-field col s12">
                             <div class="input-field col s12">
                                 <strong>
@@ -128,6 +142,7 @@ if (!$project) {
                             </div>
                         </div>
                         <? foreach ($products as $product) : ?>
+                            <? $contract_amount += $product['amount'] ?>
                             <div class="project__flex">
                                 <div class="input-field col s12">
                                     <strong>

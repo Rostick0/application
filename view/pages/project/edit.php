@@ -26,6 +26,8 @@ $end_date = $_REQUEST['project_end_date'];
 $comment = $_REQUEST['project_comment'];
 $complaint = $_REQUEST['project_complaint'];
 
+$is_ready = $_REQUEST['project_is_ready'];
+
 $button_edit = $_REQUEST['button_edit'];
 
 $my_access = ProjectAccessController::getMy($project_id)->fetch_assoc();
@@ -42,6 +44,7 @@ if ((array_search('all', $my_acces_array) !== false) || array_search('product', 
 
     $products_new = [
         $_REQUEST['product_name'],
+        $_REQUEST['product_track_number'],
         $_REQUEST['product_address_from'],
         $_REQUEST['product_address_to'],
         $_REQUEST['product_count'],
@@ -58,6 +61,10 @@ if ((array_search('all', $my_acces_array) !== false) || array_search('product', 
 
 if (isset($button_edit)) {
     $error = ProjectController::edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $products_new, $my_acces_array);
+
+    if (!$error) {
+        $error = ProjectController::setReady($project_id, $is_ready);
+    }
 }
 
 $button_delete = $_REQUEST['button_delete'];
@@ -178,10 +185,10 @@ if (isset($button_delete)) {
                             <div class="input-field col s12">
                                 <? if (array_search('contract', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                     <input class="validate" id="project_contract" type="number" name="project_contract" value="<?= $project['contract'] ?>">
-                                    <label for="project_contract">Договор</label>
+                                    <label for="project_contract">Номер договора</label>
                                 <? else : ?>
                                     <strong>
-                                        Договор
+                                        Номер договора
                                     </strong>
                                     <p>
                                         <?= $project['contract'] ?>
@@ -212,10 +219,10 @@ if (isset($button_delete)) {
                             <div class="input-field col s12">
                                 <? if (array_search('start_date', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                     <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" value="<?= DateEditor::normalizeDate($project['start_date'], true) ?>" readonly>
-                                    <label for="project_start_date">Дата начала*</label>
+                                    <label for="project_start_date">Дата начала контракта*</label>
                                 <? else : ?>
                                     <strong>
-                                        Дата начала
+                                        Дата начала контракта
                                     </strong>
                                     <p>
                                         <?= DateEditor::normalizeDate($project['start_date'], true) ?>
@@ -225,10 +232,10 @@ if (isset($button_delete)) {
                             <div class="input-field col s12">
                                 <? if (array_search('end_date', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                     <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" value="<?= DateEditor::normalizeDate($project['end_date'], true) ?>" readonly>
-                                    <label for="project_end_date">Дата окончания*</label>
+                                    <label for="project_end_date">Дата окончания контракта*</label>
                                 <? else : ?>
                                     <strong>
-                                        Дата окончания
+                                        Дата окончания контракта
                                     </strong>
                                     <p>
                                         <?= DateEditor::normalizeDate($project['end_date'], true) ?>
@@ -268,7 +275,7 @@ if (isset($button_delete)) {
                         </div>
                         <? if ($can_interaction_product) : ?>
                             <? foreach ($products as $product) : ?>
-                                <div class="project__flex">
+                                <div class="project__flex project__product">
                                     <input type="text" name="product_id[]" value="<?= $product['product_id'] ?>" hidden>
                                     <div class="input-field col s12">
                                         <input class="validate" id="product_name_<?= $product['product_id'] ?>" type="text" name="product_name[]" value="<?= $product['name'] ?>">
@@ -331,16 +338,16 @@ if (isset($button_delete)) {
                                             Удалить
                                         </button>
                                     </div>
-                                    <? 
-                                        if (isset($_REQUEST["button_delete_{$product['product_id']}"])) {
-                                            ProductController::delete($product['product_id'], $project_id);
-                                        }
+                                    <?
+                                    if (isset($_REQUEST["button_delete_{$product['product_id']}"])) {
+                                        ProductController::delete($product['product_id'], $project_id);
+                                    }
                                     ?>
                                 </div>
                             <? endforeach ?>
                         <? else : ?>
                             <? foreach ($products as $product) : ?>
-                                <div class="project__flex">
+                                <div class="project__flex project__product">
                                     <div class="input-field col s12">
                                         <strong>
                                             Наименование
@@ -443,6 +450,16 @@ if (isset($button_delete)) {
                             <a class="waves-effect waves-light btn-large blue darken-1 product_add" href="/project/users?project_id=<?= $project_id ?>">
                                 Добавить человека
                             </a>
+                        </div>
+                        <div class="project__button">
+                            <label class="project__is-ready">
+                                <input type="checkbox" class="filled-in" name="project_is_ready" <?= $project['is_ready'] == 1 ? 'checked' : '' ?>>
+                                <span class="project__is-ready_text">
+                                    <span class="project__is-ready_text">
+                                        Заказ готов?
+                                    </span>
+                                </span>
+                            </label>
                         </div>
                         <div class="project__button">
                             <div class="project__button_inner">

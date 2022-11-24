@@ -50,7 +50,11 @@ class Project {
     public static function setReady($project_id, $is_ready) {
         global $db_connect;
 
-        return $db_connect->query("UPDATE `project` SET `is_ready` = '$is_ready' WHERE `project_id` = '$project_id'");
+        $query = $db_connect->query("UPDATE `project` SET `is_ready` = '$is_ready' WHERE `project_id` = '$project_id'");
+
+        var_dump($query->error);
+
+        return $query;
     }
 
     public static function delete($project_id) {

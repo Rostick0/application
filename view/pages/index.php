@@ -34,7 +34,7 @@ $project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
             <div class="container">
                 <? foreach ($project_list as $project) : ?>
                     <div class="col s12 m7">
-                        <div class="card">
+                        <div class="card <?= ProjectController::checkDate($project['start_date'], $project['is_ready']) ?>">
                             <div class="card-content">
                                 <div class="card-content__top">
                                     <h2 class="card-content__title">
@@ -50,11 +50,11 @@ $project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
                                 <p class="card-content__ready-status">
                                     <strong>
                                         <? if ($project['is_ready']) : ?>
-                                            <span class="green-text text-darken-3">
+                                            <span>
                                                 Готов
                                             </span>
                                         <? else : ?>
-                                            <span class="red-text text-darken-3">
+                                            <span>
                                                 Не готов
                                             </span>
                                         <? endif; ?>

@@ -9,14 +9,14 @@ $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 $page_offset = ($page - 1) * 20;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
-$project_count = DbQuery::get('project')->num_rows;
+$project_count = DbQuery::get('user')->num_rows;
 $page_count = ceil($project_count / 20);
 
 $user_search = DbQuery::protectedData($_REQUEST['user_search']);
-$user_email = $_REQUEST['user_email'];
+$user_FCs = $_REQUEST['user_FCs'];
 
-if ($user_email) {
-    $user_list = UserController::search($user_email, 20, $page_offset);
+if ($user_FCs) {
+    $user_list = UserController::search($user_FCs, 20, $page_offset);
 } else {
     $user_list = DbQuery::getDesc('user', 'user_id', 20, $page_offset);
 }
@@ -43,8 +43,8 @@ if ($user_email) {
             <div class="container">
                 <form class="users__form" method="GET">
                     <div class="users__input input-field">
-                        <input class="validate" id="user_email" type="text" name="user_email">
-                        <label for="user_email">Поиск по почте</label>
+                        <input class="validate" id="user_FCs" type="text" name="user_FCs">
+                        <label for="user_FCs">Поиск по ФИО</label>
                     </div>
                     <button class="btn waves-effect waves-light blue darken-1" type="submit" >
                         <span>

@@ -23,6 +23,7 @@ $button_create = $_REQUEST['button_create'];
 $text = [];
 $products = [
     $_REQUEST['product_name'],
+    $_REQUEST['product_track_number'],
     $_REQUEST['product_address_from'],
     $_REQUEST['product_address_to'],
     $_REQUEST['product_count'],
@@ -105,7 +106,7 @@ if (isset($button_create)) {
                             </div>
                             <div class="input-field col s12">
                                 <input class="validate" id="project_contract" type="number" name="project_contract">
-                                <label for="project_contract">Договор</label>
+                                <label for="project_contract">Номер договора</label>
                             </div>
                         </div>
                         <div class="project__flex">
@@ -121,11 +122,11 @@ if (isset($button_create)) {
                         <div class="project__flex">
                             <div class="input-field col s12">
                                 <input class="validate datepicker" id="project_start_date" type="text" name="project_start_date" readonly>
-                                <label for="project_start_date">Дата начала*</label>
+                                <label for="project_start_date">Дата начала контракта*</label>
                             </div>
                             <div class="input-field col s12">
                                 <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" readonly>
-                                <label for="project_end_date">Дата окончания*</label>
+                                <label for="project_end_date">Дата окончания контракта*</label>
                             </div>
                         </div>
                         <div class="input-field col s12">
