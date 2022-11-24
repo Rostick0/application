@@ -65,6 +65,33 @@
                                     Статус оплаты
                                 </label>
                             </div>
+                            <div class="file-field input-field">
+                                <div class="btn">
+                                    <span>File</span>
+                                    <input type="file" name="product_document[]">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text">
+                                </div>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_link_${countCreated}" type="text" name="product_link[]">
+                                <label for="product_link_${countCreated}">Ссылка на товар</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate" id="product_shipping_cost_${countCreated}" type="number" name="product_shipping_cost[]" step="0.001">
+                                <label for="product_shipping_cost_${countCreated}">Стоимость доставки</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <select name="product_status_exploitation[]">
+                                    <? foreach ($status_exploitation as $value) : ?>
+                                        <option value="<?= $value['status_exploitation_id'] ?>"><?= $value['name'] ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                                <label>
+                                    Статус доставка
+                                </label>
+                            </div>
                         </div>`;
         }
     </script>

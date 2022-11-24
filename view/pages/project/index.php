@@ -109,7 +109,7 @@ $contract_amount = 0;
                                 </p>
                             </div>
                         </div>
-                        <? if ($contract_amount): ?>
+                        <? if ($contract_amount) : ?>
                             <div class="input-field col s12">
                                 <div class="input-field col s12">
                                     <strong>
@@ -230,6 +230,42 @@ $contract_amount = 0;
                                     </strong>
                                     <p>
                                         <?= DbQuery::parse('status_payment', 'status_payment_id', $product['status_payment']) ?>
+                                    </p>
+                                </div>
+                                <div class="input-field col s12">
+                                    <strong>
+                                        Ссылка на документ
+                                    </strong>
+                                    <? if ($product['document']) : ?>
+                                        <a href="<?= $PATH_UPLOAD . $product['document'] ?>">
+                                            Открыть
+                                        </a>
+                                    <? endif ?>
+                                </div>
+                                <div class="input-field col s12">
+                                    <strong>
+                                        Ссылка на товар
+                                    </strong>
+                                    <? if ($product['link']) : ?>
+                                        <a href="<?= $PATH_UPLOAD . $product['link'] ?>">
+                                            Открыть
+                                        </a>
+                                    <? endif ?>
+                                </div>
+                                <div class="input-field col s12">
+                                    <strong>
+                                        Стоимость доставки
+                                    </strong>
+                                    <p>
+                                        <?= HtmlDom::checkData($product['shipping_cost']) ?>
+                                    </p>
+                                </div>
+                                <div class="input-field col s12">
+                                    <strong>
+                                        Ввод в эксплуатацию
+                                    </strong>
+                                    <p>
+                                        <?= DbQuery::parse('status_exploitation', 'status_exploitation_id', $product['status_exploitation']) ?>
                                     </p>
                                 </div>
                             </div>

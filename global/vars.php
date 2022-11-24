@@ -17,4 +17,12 @@ $MONTHS_SHORT = [
     'Дек'
 ];
 
+$PATH_UPLOAD = "./view/static/upload/";
+
+$ALLOWED_DOCUMENT_TYPES = [
+    'image/png',
+    'image/jpeg',
+    'image/jpg'
+];
+
 ?>

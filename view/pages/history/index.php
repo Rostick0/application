@@ -75,7 +75,7 @@ if ($search) {
                                     <q>
                                         <?= $project['name'] ?>
                                     </q>
-                                    <? if ($project['old'] != 'NULL' && $project['new'] != 'NULL') : ?>
+                                    <? if ($project['old'] && $project['new']) : ?>
                                         <span>
                                             <span>
                                                 старое значение

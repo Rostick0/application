@@ -4,6 +4,7 @@ $users = DbQuery::get('user');
 $zmo = DbQuery::get('zmo');
 $status_delivery = DbQuery::get('status_delivery');
 $status_payment = DbQuery::get('status_payment');
+$status_exploitation = DbQuery::get('status_exploitation');
 
 $is_made_order = $_REQUEST['project_is_made_order'];
 $documents = $_REQUEST['project_documents'];
@@ -34,6 +35,10 @@ $products = [
     $_REQUEST['product_purchase_amount'],
     $_REQUEST['product_status_delivery'],
     $_REQUEST['product_status_payment'],
+    $_FILES['product_document'],
+    $_REQUEST['product_link'],
+    $_REQUEST['product_shipping_cost'],
+    $_REQUEST['product_status_exploitation']
 ];
 
 if (isset($button_create)) {
@@ -66,7 +71,7 @@ if (isset($button_create)) {
                             <?= $error ?>
                         </p>
                     <? endif; ?>
-                    <form class="col s12 project__form" method="POST">
+                    <form class="col s12 project__form" method="POST" enctype="multipart/form-data">
                         <div class="project__flex">
                             <label class="project__is-ready">
                                 <input type="checkbox" class="filled-in" name="project_is_made_order">

@@ -52,8 +52,6 @@ class Project {
 
         $query = $db_connect->query("UPDATE `project` SET `is_ready` = '$is_ready' WHERE `project_id` = '$project_id'");
 
-        var_dump($query->error);
-
         return $query;
     }
 

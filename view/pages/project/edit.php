@@ -12,6 +12,7 @@ $users = DbQuery::get('user');
 $zmo = DbQuery::get('zmo');
 $status_delivery = DbQuery::get('status_delivery');
 $status_payment = DbQuery::get('status_payment');
+$status_exploitation = DbQuery::get('status_exploitation');
 
 $is_made_order = $_REQUEST['project_is_made_order'];
 $documents = $_REQUEST['project_documents'];
@@ -55,6 +56,10 @@ if ((array_search('all', $my_acces_array) !== false) || array_search('product', 
         $_REQUEST['product_purchase_amount'],
         $_REQUEST['product_status_delivery'],
         $_REQUEST['product_status_payment'],
+        $_FILES['product_document'],
+        $_REQUEST['product_link'],
+        $_REQUEST['product_shipping_cost'],
+        $_REQUEST['product_status_exploitation'],
         $_REQUEST['product_id'],
     ];
 }
@@ -99,7 +104,7 @@ if (isset($button_delete)) {
                             <?= $error ?>
                         </p>
                     <? endif; ?>
-                    <form class="col s12 project__form" method="POST">
+                    <form class="col s12 project__form" method="POST" enctype="multipart/form-data">
                         <div class="project__flex">
                             <? if (array_search('is_made_order', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                 <label class="project__is-ready">
@@ -282,6 +287,10 @@ if (isset($button_delete)) {
                                         <label for="product_name_<?= $product['product_id'] ?>">Наименование</label>
                                     </div>
                                     <div class="input-field col s12">
+                                        <input class="validate" id="product_track_number_<?= $product['track_number'] ?>" type="number" name="product_track_number[]">
+                                        <label for="product_track_number_<?= $product['track_number'] ?>">Трек номер</label>
+                                    </div>
+                                    <div class="input-field col s12">
                                         <input class="validate" id="product_address_from_<?= $product['product_id'] ?>" type="text" name="product_address_from[]" value="<?= $product['address_from'] ?>">
                                         <label for="product_address_from_<?= $product['product_id'] ?>">Откуда</label>
                                     </div>
@@ -333,6 +342,33 @@ if (isset($button_delete)) {
                                             Статус оплаты
                                         </label>
                                     </div>
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <span>File</span>
+                                            <input type="file" name="product_document[]">
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text" value="<?= $product['document'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <input class="validate" id="product_link_<?= $product['link'] ?>" type="text" name="product_link[]" value="<?= $product['name'] ?>">
+                                        <label for="product_link_<?= $product['link'] ?>">Ссылка на товар</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <input class="validate" id="product_shipping_cost_<?= $product['shipping_cost'] ?>" type="number" name="product_shipping_cost[]" value="<?= $product['shipping_cost'] ?>" step="0.001">
+                                        <label for="product_shipping_cost_<?= $product['shipping_cost'] ?>">Стоимость доставки</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <select name="product_status_exploitation[]">
+                                            <? foreach ($status_exploitation as $value) : ?>
+                                                <option value="<?= $value['status_exploitation_id'] ?>" <?= $value['status_exploitation_id'] == $product['status_exploitation'] ? 'selected' : '' ?>><?= $value['name'] ?></option>
+                                            <? endforeach; ?>
+                                        </select>
+                                        <label>
+                                            Статус доставка
+                                        </label>
+                                    </div>
                                     <div class="input-field col s12">
                                         <button class="waves-effect waves-light btn-large red darken-1" name="button_delete_<?= $product['product_id'] ?>">
                                             Удалить
@@ -341,6 +377,8 @@ if (isset($button_delete)) {
                                     <?
                                     if (isset($_REQUEST["button_delete_{$product['product_id']}"])) {
                                         ProductController::delete($product['product_id'], $project_id);
+
+                                        echo '<meta http-equiv="refresh" content="0">';
                                     }
                                     ?>
                                 </div>
@@ -354,6 +392,14 @@ if (isset($button_delete)) {
                                         </strong>
                                         <p>
                                             <?= HtmlDom::checkData($product['name']) ?>
+                                        </p>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <strong>
+                                            Трек номера
+                                        </strong>
+                                        <p>
+                                            <?= HtmlDom::checkData($product['track_number']) ?>
                                         </p>
                                     </div>
                                     <div class="input-field col s12">
@@ -436,6 +482,42 @@ if (isset($button_delete)) {
                                             <?= DbQuery::parse('status_payment', 'status_payment_id', $product['status_payment']) ?>
                                         </p>
                                     </div>
+                                    <div class="input-field col s12">
+                                        <strong>
+                                            Ссылка на документ
+                                        </strong>
+                                        <? if ($product['document']) : ?>
+                                            <a href="<?= $PATH_UPLOAD . $product['document'] ?>">
+                                                Открыть
+                                            </a>
+                                        <? endif ?>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <strong>
+                                            Ссылка на товар
+                                        </strong>
+                                        <? if ($product['link']) : ?>
+                                            <a href="<?= $PATH_UPLOAD . $product['link'] ?>">
+                                                Открыть
+                                            </a>
+                                        <? endif ?>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <strong>
+                                            Стоимость доставки
+                                        </strong>
+                                        <p>
+                                            <?= HtmlDom::checkData($product['shipping_cost']) ?>
+                                        </p>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <strong>
+                                            Ввод в эксплуатацию
+                                        </strong>
+                                        <p>
+                                            <?= DbQuery::parse('status_exploitation', 'status_exploitation_id', $product['status_exploitation']) ?>
+                                        </p>
+                                    </div>
                                 </div>
                             <? endforeach ?>
                         <? endif ?>
@@ -446,11 +528,13 @@ if (isset($button_delete)) {
                                 </button>
                             </div>
                         <? endif; ?>
-                        <div class="project__button project__button_add">
-                            <a class="waves-effect waves-light btn-large blue darken-1 product_add" href="/project/users?project_id=<?= $project_id ?>">
-                                Добавить человека
-                            </a>
-                        </div>
+                        <? if (array_search('add_people', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
+                            <div class="project__button project__button_add">
+                                <a class="waves-effect waves-light btn-large blue darken-1 product_add" href="/project/users?project_id=<?= $project_id ?>">
+                                    Добавить человека
+                                </a>
+                            </div>
+                        <? endif ?>
                         <div class="project__button">
                             <label class="project__is-ready">
                                 <input type="checkbox" class="filled-in" name="project_is_ready" <?= $project['is_ready'] == 1 ? 'checked' : '' ?>>

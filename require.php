@@ -23,6 +23,8 @@ require_once './controller/project_history_edit.php';
 require_once './model/project_access.php';
 require_once './controller/project_access.php';
 
+require_once './controller/document.php';
+
 require_once './model/product.php';
 require_once './controller/product.php';
 

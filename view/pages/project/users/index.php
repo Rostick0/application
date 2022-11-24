@@ -42,6 +42,7 @@ if ($user_FCs) {
             </header>
             <div class="container">
                 <form class="users__form" method="GET">
+                    <input type="text" name="project_id" value="<?= $project_id ?>" hidden>
                     <div class="users__input input-field">
                         <input class="validate" id="user_FCs" type="text" name="user_FCs">
                         <label for="user_FCs">Поиск по ФИО</label>
