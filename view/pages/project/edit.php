@@ -590,9 +590,11 @@ if (isset($button_delete)) {
     <? require_once './view/components/script.php'; ?>
     <? if (!empty($product_ids)) : ?>
         <script defer>
-            <? foreach ($product_ids as $id) : ?>
-                setCounter(<?= $id ?>);
-            <? endforeach ?>
+            setTimeout(() => {
+                <? foreach ($product_ids as $id) : ?>
+                    setCounter(<?= $id ?>);
+                <? endforeach ?>
+            }, 500)
         </script>
     <? endif ?>
 </body>

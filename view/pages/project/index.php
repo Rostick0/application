@@ -108,19 +108,25 @@ $contract_amount = 0;
                                     <?= HtmlDom::checkData(DateEditor::normalizeDate($project['end_date'], true)) ?>
                                 </p>
                             </div>
-                        </div>
-                        <? if ($contract_amount) : ?>
                             <div class="input-field col s12">
+                                <strong>
+                                    Дата доставки
+                                </strong>
+                                <p>
+                                    <?= DateEditor::normalizeDate($project['delivery_date'], true) ?>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="input-field col s12">
                                 <div class="input-field col s12">
                                     <strong>
                                         Сумма контракта
                                     </strong>
-                                    <p>
-                                        <?= $contract_amount ?>
+                                    <p class="product__amount_price">
+                                        
                                     </p>
                                 </div>
                             </div>
-                        <? endif ?>
                         <div class="input-field col s12">
                             <div class="input-field col s12">
                                 <strong>
@@ -142,8 +148,8 @@ $contract_amount = 0;
                             </div>
                         </div>
                         <? foreach ($products as $product) : ?>
-                            <? $contract_amount += $product['amount'] ?>
-                            <div class="project__flex">
+                            <? $contract_amount += $product['amount'] + $product['shipping_cost'] ?>
+                            <div class="project__flex project__product">
                                 <div class="input-field col s12">
                                     <strong>
                                         Наименование
@@ -283,6 +289,11 @@ $contract_amount = 0;
         </div>
     </div>
     <? require_once './view/components/script.php'; ?>
+    <script defer>
+        const productAmountPrice = document.querySelector('.product__amount_price');
+
+        productAmountPrice.textContent = "<?= $contract_amount ? $contract_amount : '-' ?>";
+    </script>
 </body>
 
 </html>

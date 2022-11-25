@@ -13,8 +13,6 @@ $status_date = DbQuery::get('status_date');
 $history_status_date = $_REQUEST['status_date'] ? $_REQUEST['status_date'] : [];
 $history_status_date = is_array($history_status_date) ? $history_status_date : [$history_status_date];
 
-var_dump($_GET);
-
 if ($search) {
     $project_count = ProjectHistoryEditController::search($search, $search, $history_status_date, null, null, 'count');
     $page_count = ceil($project_count / 20);
