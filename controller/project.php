@@ -2,21 +2,24 @@
 
 class ProjectController
 {
-    public static function getMy()
+    public static function getMy($limit, $offset)
     {
         $user_id = (int) $_SESSION['user']['user_id'];
+        $limit = (int) $limit;
+        $offset = (int) $offset;
 
-        return Project::getMy($user_id);
+        return Project::getMy($user_id, $limit, $offset);
     }
 
-    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $is_ready = 0, $products)
+    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $is_ready = 0, $products)
     {
         $name = DbQuery::protectedData($name);
         $contract = DbQuery::protectedData($contract);
-        //$address = DbQuery::protectedData($address);
+        $address = DbQuery::protectedData($address);
         $inn = (int) $inn;
         $start_date = DateEditor::normalizeDateSql($start_date);
         $end_date = DateEditor::normalizeDateSql($end_date);
+        $delivery_date = DateEditor::normalizeDateSql($delivery_date);
         $comment = DbQuery::protectedData($comment);
         $complaint = DbQuery::protectedData($complaint);
         $documents = $documents ? 1 : 0;
@@ -34,9 +37,13 @@ class ProjectController
 
         if ($user_power < 25) return "Создание недоступно для вас";
 
-        $project_id = Project::create($name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $is_ready);
+        $project_id = Project::create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $is_ready);
         ProjectAccessController::create($project_id, json_encode(['all']), $_SESSION['user']['user_id']);
         ProjectHistoryEditController::create('Создал проект ' . $project_id, null, null, 'create', $project_id, $_SESSION['user']['user_id']);
+
+        if ($delivery_date) {
+            ProjectController::setStatusDate($project_id, $delivery_date, $is_ready);
+        }
 
         if (!is_array($products[0])) return;
 
@@ -58,7 +65,7 @@ class ProjectController
         header('Refresh: 0');
     }
 
-    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $products, $access_array)
+    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $products, $access_array)
     {
         $project_id = (int) $project_id;
         $name = DbQuery::protectedData($name);
@@ -67,6 +74,7 @@ class ProjectController
         $inn = (int) $inn;
         $start_date = $start_date ? DateEditor::normalizeDateSql($start_date) : "";
         $end_date = $end_date ? DateEditor::normalizeDateSql($end_date) : "";
+        $delivery_date = $delivery_date ? DateEditor::normalizeDateSql($delivery_date) : "";
         $comment = DbQuery::protectedData($comment);
         $complaint = DbQuery::protectedData($complaint);
         $zmo_id = (int) $zmo_id;
@@ -80,6 +88,7 @@ class ProjectController
             'inn',
             'start_date',
             'end_date',
+            'delivery_date',
             'comment',
             'complaint',
             'zmo_id',
@@ -115,9 +124,13 @@ class ProjectController
 
         if (!$data_type['inn']) return "Отсуствует ИНН";
 
-        $query = Project::edit($project_id, $data_type['name'], $data_type['contract'], $data_type['address'], $data_type['inn'], $data_type['start_date'], $data_type['end_date'], $data_type['comment'], $data_type['complaint'], $data_type['zmo_id'], $data_type['is_made_order'], $data_type['document_scan'], $data_type['documents']);
+        $query = Project::edit($project_id, $data_type['name'], $data_type['contract'], $data_type['address'], $data_type['inn'], $data_type['start_date'], $data_type['end_date'], $data_type['delivery_date'], $data_type['comment'], $data_type['complaint'], $data_type['zmo_id'], $data_type['is_made_order'], $data_type['document_scan'], $data_type['documents']);
 
         if (!$query) return "Ошибка при изменении данных";
+
+        if ($data_type['delivery_date'] != $delivery_date) {
+            ProjectController::setStatusDate($project_id, $data_type['delivery_date'], $data_type['is_ready']);
+        }
 
         if (count($action_edit) > 1) {
             foreach ($action_edit as $action) {
@@ -269,16 +282,38 @@ class ProjectController
         return $old == $new;
     }
 
-    public static function checkDate($start_date, $is_ready) {
-        if ($is_ready) return 'green lighten-3';
+    public static function setStatusDate($project_id, $date_delivery, $is_ready) {
+        if ($is_ready) return;
+
+        if (!$date_delivery) return;
+
+        $status_date = 2;
         
-        if (time() - (strtotime($start_date)) / 60 * 60 * 24 * 2 <= 2) {
-            return 'yellow lighten-3';
-        } else {
-            return 'red lighten-3';
+        if (time() - (strtotime($date_delivery)) / 60 * 60 * 24 * 2 <= 2) {
+            $status_date = 1;
         }
 
-        return '';
+        Project::setStatusDate($project_id, $status_date);
+    }
+
+    public static function checkDate($start_date, $is_ready) {
+        if ($is_ready) return 'green lighten-3';
+
+        if (!$start_date) return;
+        
+        if (time() - (strtotime($start_date)) / 60 * 60 * 24 * 2 <= 2) return 'yellow lighten-3';
+
+        return 'red lighten-3';
+    }
+
+    public static function colorProject($delivery_status, $is_ready) {
+        if ($is_ready) return 'green lighten-3';
+
+        if (!$delivery_status) return;
+
+        if ($delivery_status == 2) return 'yellow lighten-3';
+
+        if ($delivery_status == 3) return 'red lighten-3';
     }
     
     public static function delete($project_id, $access_array) {

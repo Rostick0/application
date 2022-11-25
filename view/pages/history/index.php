@@ -7,17 +7,26 @@ $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 $page_offset = ($page - 1) * 20;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
-$project_count = DbQuery::get('project_history_edit')->num_rows;
-$page_count = ceil($project_count / 20);
-
-$project_list = DbQuery::getDesc('project_history_edit', 'project_history_edit_id', 20, $page_offset);
-
 $search = $_GET['project_history_search'];
+$status_date = DbQuery::get('status_date');
+
+$history_status_date = $_REQUEST['status_date'] ? $_REQUEST['status_date'] : [];
+$history_status_date = is_array($history_status_date) ? $history_status_date : [$history_status_date];
+
+var_dump($_GET);
 
 if ($search) {
-    $project_list = ProjectHistoryEditController::search($search, $search, 20, $page_offset);
-}
+    $project_count = ProjectHistoryEditController::search($search, $search, $history_status_date, null, null, 'count');
+    $page_count = ceil($project_count / 20);
 
+    $project_list = ProjectHistoryEditController::search($search, $search, $history_status_date, 20, $page_offset);
+    
+} else {
+    $project_count = ProjectHistoryEditController::get($history_status_date, null, null, 'count');
+    $page_count = ceil($project_count / 20);
+    
+    $project_list = ProjectHistoryEditController::get($history_status_date, 20, $page_offset);
+}
 
 ?>
 
@@ -50,10 +59,20 @@ if ($search) {
                         </span>
                         <i class="material-icons right">send</i>
                     </button>
+                    <div class="users__checkboxs">
+                        <? foreach ($status_date as $value): ?>
+                            <label>
+                                <input name="status_date[]" type="checkbox" class="filled-in" value="<?= $value['status_date_id'] ?>" <?= array_search($value['status_date_id'], $history_status_date) !== false ? 'checked' : '' ?> />
+                                <span>
+                                    <?= $value['name'] ?>
+                                </span>
+                            </label>
+                        <? endforeach ?>
+                    </div>
                 </form>
                 <? foreach ($project_list as $project) : ?>
                     <div class="col s12 m7">
-                        <div class="card <?= ProjectController::checkDate(DbQuery::parse('project', 'project_id', $project['project_id'], 'start_date'), DbQuery::parse('project', 'project_id', $project['project_id'], 'is_ready')) ?>">
+                        <div class="card <?= ProjectController::colorProject(DbQuery::parse('project', 'project_id', $project['project_id'], 'status_date'), DbQuery::parse('project', 'project_id', $project['project_id'], 'is_ready')) ?>">
                             <div class="card-content">
                                 <p>
                                     <strong>
@@ -104,6 +123,10 @@ if ($search) {
 
                 $project_count;
                 $page_count;
+
+                if ($search) $project_query_add = "&project_history_search=$search";
+                if ($history_status_date) $project_query_add .= '&status_date%5B%5D=' . implode('&status_date%5B%5D=', $history_status_date);
+
                 require_once './view/components/pagination.php';
                 ?>
             </div>

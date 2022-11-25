@@ -26,8 +26,7 @@
                 </a>
             </li>
         <? endfor; ?>
-
-        <? if ($page_count > $page) : ?>
+        <? if (floor($page_count/10)*10 > $page) : ?>
             <li class="waves-effect">
                 <a href="?page=<?= $page_ceil + 10 . $project_query_add ?>">
                     <i class="material-icons">

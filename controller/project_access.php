@@ -40,17 +40,17 @@ class ProjectAccessController {
 
         if ($name === NULL) return "Невыбран доступ";
 
-        if (strpos($name, 'all') !== false) {
-            $name = json_encode(["all"]);
+        if (array_search('all', $name) !== false) {
+            $name_protected = json_encode(["all"]);
+        } else {
+            $name_protected = [];
+
+            foreach ($name as $value) {
+                $name_protected[] = DbQuery::replacingQuotes($value);
+            }
+    
+            $name_protected = json_encode($name_protected);
         }
-
-        $name_protected = [];
-
-        foreach ($name as $value) {
-            $name_protected[] = DbQuery::replacingQuotes($value);
-        }
-
-        $name_protected = json_encode($name_protected);
 
         if (ProjectAccess::get($project_id, $user_id)->num_rows > 0) {
             ProjectAccess::update($project_id, $name_protected, $user_id);

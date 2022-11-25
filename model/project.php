@@ -9,39 +9,41 @@ class Project {
         return $query;
     }
 
-    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0, $is_ready = 0) {
+    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0, $is_ready = 0) {
         global $db_connect;
 
         $address = !empty($address) ? "'$address'" : "NULL";
         $contract = !empty($contract) ? "'$contract'" : "NULL";
         $start_date = !empty($start_date) ? "'$start_date'" : "NULL";
         $end_date = !empty($end_date) ? "'$end_date'" : "NULL";
+        $delivery_date = !empty($delivery_date) ? "'$delivery_date'" : "NULL";
         $comment = !empty($comment) ? "'$comment'" : "NULL";
         $complaint = !empty($complaint) ? "'$complaint'" : "NULL";
 
         $query = $db_connect->query("INSERT INTO
-            `project` (`name`, `contract`, `address`, `inn`, `start_date`, `end_date`, `comment`, `complaint`, `zmo_id`, `is_made_order`, `document_scan`, `documents`, `is_ready`)
+            `project` (`name`, `contract`, `address`, `inn`, `start_date`, `end_date`, `delivery_date`, `comment`, `complaint`, `zmo_id`, `is_made_order`, `document_scan`, `documents`, `is_ready`)
                 VALUES
-            ('$name',$contract,$address,'$inn',$start_date,$end_date,$comment,$complaint,'$zmo_id','$is_made_order', '$document_scan','$documents','$is_ready')");
+            ('$name',$contract,$address,'$inn',$start_date,$end_date,$delivery_date,$comment,$complaint,'$zmo_id','$is_made_order', '$document_scan','$documents','$is_ready')");
 
         if ($query) {
             return mysqli_insert_id($db_connect);
         }
     }
 
-    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0) {
+    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0) {
         global $db_connect;
 
         $address = !empty($address) ? "'$address'" : "NULL";
         $contract = !empty($contract) ? "'$contract'" : "NULL";
         $start_date = !empty($start_date) ? "'$start_date'" : "NULL";
         $end_date = !empty($end_date) ? "'$end_date'" : "NULL";
+        $delivery_date = !empty($delivery_date) ? "'$delivery_date'" : "NULL";
         $comment = !empty($comment) ? "'$comment'" : "NULL";
         $complaint = !empty($complaint) ? "'$complaint'" : "NULL";
 
         $query = $db_connect->query("UPDATE `project`
         SET
-        `name`='$name',`contract`=$contract,`address`=$address,`inn`='$inn',`start_date`=$start_date,`end_date`=$end_date,`comment`=$comment,`complaint`=$complaint,`is_made_order`='$is_made_order',`zmo_id`='$zmo_id',`document_scan`='$document_scan',`documents`='$documents'
+        `name`='$name',`contract`=$contract,`address`=$address,`inn`='$inn',`start_date`=$start_date,`end_date`=$end_date,`delivery_date`=$delivery_date,`comment`=$comment,`complaint`=$complaint,`is_made_order`='$is_made_order',`zmo_id`='$zmo_id',`document_scan`='$document_scan',`documents`='$documents'
         WHERE `project_id` = '$project_id'");
 
         return $query;
@@ -53,6 +55,14 @@ class Project {
         $query = $db_connect->query("UPDATE `project` SET `is_ready` = '$is_ready' WHERE `project_id` = '$project_id'");
 
         return $query;
+    }
+
+    public static function setStatusDate($project_id, $status_date) {
+        global $db_connect;
+
+        $status_date = !empty($status_date) ? "'$status_date'" : "NULL";
+
+        return $db_connect->query("UPDATE `project` SET `status_date` = '$status_date' WHERE `project_id` = '$project_id'");
     }
 
     public static function delete($project_id) {

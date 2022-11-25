@@ -7,7 +7,7 @@ $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 $page_offset = ($page - 1) * 20;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
-$project_count = DbQuery::get('project')->num_rows;
+$project_count = DbQuery::getCount('project');
 $page_count = ceil($project_count / 20);
 
 $project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
@@ -34,14 +34,14 @@ $project_list = DbQuery::getDesc('project', 'project_id', 20, $page_offset);
             <div class="container">
                 <? foreach ($project_list as $project) : ?>
                     <div class="col s12 m7">
-                        <div class="card <?= ProjectController::checkDate($project['start_date'], $project['is_ready']) ?>">
+                        <div class="card <?= ProjectController::colorProject($project['status_date'], $project['is_ready']) ?>">
                             <div class="card-content">
                                 <div class="card-content__top">
                                     <h2 class="card-content__title">
                                         <?= $project['name'] ?>
                                     </h2>
                                     <div class="card-contet__time">
-                                        <?= $project['created_date'] ?>
+                                        <?= $project['start_date'] ?>
                                     </div>
                                 </div>
                                 <p>

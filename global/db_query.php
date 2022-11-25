@@ -21,6 +21,18 @@ class DbQuery {
         return $string;
     }
 
+    public static function setIntInArray($array) {
+        if (!is_array($array)) return [];
+
+        $result_array = [];
+
+        foreach ($array as $value) {
+            $result_array[] = (int) $value;
+        }
+
+        return $result_array;
+    }
+
     public static function get($table, $column = null, $value = null, $limit = null, $offset = null) {
         global $db_connect;
     
@@ -39,6 +51,12 @@ class DbQuery {
         }
     
         return $db_connect->query("SELECT * FROM `$table` WHERE `$column` = '$value' $limitAndOffset");
+    }
+
+    public static function getCount($table) {
+        global $db_connect;
+
+        return $db_connect->query("SELECT COUNT(*) FROM `$table`")->fetch_assoc()["COUNT(*)"];
     }
 
     public static function parse($table, $column = null, $value = null, $name = 'name') {

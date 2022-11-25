@@ -16,6 +16,7 @@ $contract = $_REQUEST['project_contract'];
 $zmo_id = $_REQUEST['project_zmo'];
 $start_date = $_REQUEST['project_start_date'];
 $end_date = $_REQUEST['project_end_date'];
+$delivery_date = $_REQUEST['project_delivery_date'];
 $comment = $_REQUEST['project_comment'];
 $complaint = $_REQUEST['project_complaint'];
 
@@ -42,7 +43,7 @@ $products = [
 ];
 
 if (isset($button_create)) {
-    $error = ProjectController::create($name, $contract, $address, $inn, $start_date, $end_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, 0, $products);
+    $error = ProjectController::create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, 0, $products);
 }
 
 ?>
@@ -132,6 +133,10 @@ if (isset($button_create)) {
                             <div class="input-field col s12">
                                 <input class="validate datepicker" id="project_end_date" type="text" name="project_end_date" readonly>
                                 <label for="project_end_date">Дата окончания контракта*</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input class="validate datepicker" id="project_delivery_date" type="text" name="project_delivery_date" readonly>
+                                <label for="project_delivery_date">Дата доставки*</label>
                             </div>
                         </div>
                         <div class="input-field col s12">
