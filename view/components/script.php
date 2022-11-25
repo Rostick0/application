@@ -89,7 +89,7 @@
                                     <? endforeach; ?>
                                 </select>
                                 <label>
-                                    Статус доставка
+                                    Статус эксплуатации
                                 </label>
                             </div>
                         </div>`;

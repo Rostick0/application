@@ -366,7 +366,7 @@ if (isset($button_delete)) {
                                             <? endforeach; ?>
                                         </select>
                                         <label>
-                                            Статус доставка
+                                            Статус эксплуатации
                                         </label>
                                     </div>
                                     <div class="input-field col s12">
