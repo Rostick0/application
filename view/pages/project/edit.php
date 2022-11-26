@@ -48,6 +48,7 @@ if ((array_search('all', $my_acces_array) !== false) || array_search('product', 
     $products_new = [
         $_REQUEST['product_name'],
         $_REQUEST['product_track_number'],
+        $_REQUEST['product_warehouse'],
         $_REQUEST['product_address_from'],
         $_REQUEST['product_address_to'],
         $_REQUEST['product_count'],
@@ -125,6 +126,8 @@ if (isset($button_delete)) {
                                     <?= $project['is_made_order'] ? 'Да' : 'Нет' ?>
                                 </p>
                             <? endif; ?>
+                        </div>
+                        <div class="project__flex">
                             <? if (array_search('documents', $my_acces_array) !== false || (array_search('all', $my_acces_array) !== false)) : ?>
                                 <label class="project__is-ready">
                                     <input type="checkbox" class="filled-in" name="project_documents" <?= $project['documents'] ? 'checked' : '' ?>>
@@ -303,8 +306,12 @@ if (isset($button_delete)) {
                                         <label for="product_name_<?= $product['product_id'] ?>">Наименование</label>
                                     </div>
                                     <div class="input-field col s12">
-                                        <input class="validate" id="product_track_number_<?= $product['track_number'] ?>" type="number" name="product_track_number[]">
-                                        <label for="product_track_number_<?= $product['track_number'] ?>">Трек номер</label>
+                                        <input class="validate" id="product_track_number_<?= $product['product_id'] ?>" type="number" name="product_track_number[]" value="<?= $product['track_number'] ?>">
+                                        <label for="product_track_number_<?= $product['product_id'] ?>">Трек номер</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <input class="validate" id="product_warehouse_<?= $product['product_id'] ?>" type="text" name="product_warehouse[]" value="<?= $product['warehouse'] ?>">
+                                        <label for="product_warehouse_<?= $product['product_id'] ?>">Склад</label>
                                     </div>
                                     <div class="input-field col s12">
                                         <input class="validate" id="product_address_from_<?= $product['product_id'] ?>" type="text" name="product_address_from[]" value="<?= $product['address_from'] ?>">
@@ -368,7 +375,7 @@ if (isset($button_delete)) {
                                         </div>
                                     </div>
                                     <div class="input-field col s12">
-                                        <input class="validate" id="product_link_<?= $product['link'] ?>" type="text" name="product_link[]" value="<?= $product['name'] ?>">
+                                        <input class="validate" id="product_link_<?= $product['link'] ?>" type="text" name="product_link[]" value="<?= $product['link'] ?>">
                                         <label for="product_link_<?= $product['link'] ?>">Ссылка на товар</label>
                                     </div>
                                     <div class="input-field col s12">
@@ -413,6 +420,14 @@ if (isset($button_delete)) {
                                     <div class="input-field col s12">
                                         <strong>
                                             Трек номера
+                                        </strong>
+                                        <p>
+                                            <?= HtmlDom::checkData($product['warehouse']) ?>
+                                        </p>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <strong>
+                                            Склад
                                         </strong>
                                         <p>
                                             <?= HtmlDom::checkData($product['track_number']) ?>

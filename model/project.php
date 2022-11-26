@@ -62,7 +62,7 @@ class Project {
 
         $status_date = !empty($status_date) ? "'$status_date'" : "NULL";
 
-        return $db_connect->query("UPDATE `project` SET `status_date` = '$status_date' WHERE `project_id` = '$project_id'");
+        return $db_connect->query("UPDATE `project` SET `status_date` = $status_date WHERE `project_id` = '$project_id'");
     }
 
     public static function delete($project_id) {

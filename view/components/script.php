@@ -14,6 +14,10 @@
                                 <label for="product_track_number_${countCreated}">Трек номер</label>
                             </div>
                             <div class="input-field col s12">
+                                <input class="validate" id="product_warehouse_${countCreated}" type="text" name="product_warehouse[]">
+                                <label for="product_warehouse_${countCreated}">Склад</label>
+                            </div>
+                            <div class="input-field col s12">
                                 <input class="validate" id="product_address_from_${countCreated}" type="text" name="product_address_from[]">
                                 <label for="product_address_from_${countCreated}">Откуда</label>
                             </div>

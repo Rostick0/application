@@ -26,6 +26,7 @@ $text = [];
 $products = [
     $_REQUEST['product_name'],
     $_REQUEST['product_track_number'],
+    $_REQUEST['product_warehouse'],
     $_REQUEST['product_address_from'],
     $_REQUEST['product_address_to'],
     $_REQUEST['product_count'],

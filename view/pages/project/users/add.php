@@ -10,6 +10,7 @@ $access_list = [
     'name' => 'Название',
     'start_date' => 'Дата начала',
     'end_date' => 'Дата окончания',
+    'delivery_date' => 'Дата доставки',
     'comment' => 'Комменатрий',
     'complaint' => 'Замечания',
     'add_people' => 'Добавлять людей',

@@ -40,6 +40,8 @@ $contract_amount = 0;
                             <p>
                                 <?= $project['is_made_order'] ? 'Да' : 'Нет' ?>
                             </p>
+                        </div>
+                        <div class="project__flex">
                             <strong>
                                 Документы готовы?
                             </strong>
@@ -118,15 +120,15 @@ $contract_amount = 0;
                             </div>
                         </div>
                         <div class="input-field col s12">
-                                <div class="input-field col s12">
-                                    <strong>
-                                        Сумма контракта
-                                    </strong>
-                                    <p class="product__amount_price">
-                                        
-                                    </p>
-                                </div>
+                            <div class="input-field col s12">
+                                <strong>
+                                    Сумма контракта
+                                </strong>
+                                <p class="product__amount_price">
+
+                                </p>
                             </div>
+                        </div>
                         <div class="input-field col s12">
                             <div class="input-field col s12">
                                 <strong>
@@ -156,6 +158,22 @@ $contract_amount = 0;
                                     </strong>
                                     <p>
                                         <?= HtmlDom::checkData($product['name']) ?>
+                                    </p>
+                                </div>
+                                <div class="input-field col s12">
+                                    <strong>
+                                        Трек номер
+                                    </strong>
+                                    <p>
+                                        <?= HtmlDom::checkData($product['track_number']) ?>
+                                    </p>
+                                </div>
+                                <div class="input-field col s12">
+                                    <strong>
+                                        Склад
+                                    </strong>
+                                    <p>
+                                        <?= HtmlDom::checkData($product['warehouse']) ?>
                                     </p>
                                 </div>
                                 <div class="input-field col s12">

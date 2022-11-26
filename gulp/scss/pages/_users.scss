@@ -2,7 +2,12 @@
     &__form {
         display: flex;
         align-items: center;
-        grid-gap: 24px;
+        flex-wrap: wrap;
+        column-gap: 24px;
+    }
+
+    &__checkboxs {
+        flex: 1 0 100%;
     }
 
     &__input {

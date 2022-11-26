@@ -40,6 +40,8 @@ CREATE TABLE `product` (
   `project_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
 -- Структура таблицы `project`
 --
@@ -53,16 +55,17 @@ CREATE TABLE `project` (
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
+  `delivery_date` date DEFAULT NULL,
   `comment` text,
   `complaint` text,
   `zmo_id` int(11) NOT NULL,
   `is_made_order` tinyint(1) NOT NULL DEFAULT '0',
   `document_scan` tinyint(1) NOT NULL DEFAULT '0',
   `documents` tinyint(1) NOT NULL DEFAULT '0',
+  `status_date` int(11) NOT NULL DEFAULT '1',
   `is_ready` tinyint(1) NOT NULL DEFAULT '0',
   `is_finally` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
 --
 -- Структура таблицы `project_access`
@@ -109,6 +112,26 @@ INSERT INTO `role` (`role_id`, `name`, `power`) VALUES
 (1, 'logistician', 1),
 (2, 'manager', 10),
 (3, 'director', 25);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `status_date`
+--
+
+CREATE TABLE `status_date` (
+  `status_date_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Дамп данных таблицы `status_date`
+--
+
+INSERT INTO `status_date` (`status_date_id`, `name`) VALUES
+(1, 'Не указана дата доставки'),
+(2, 'Скоро доставка'),
+(3, 'Просрочёна дата доставки');
 
 -- --------------------------------------------------------
 
@@ -189,6 +212,7 @@ CREATE TABLE `user` (
   `role_id` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 --
 -- Структура таблицы `zmo`
 --
@@ -249,6 +273,12 @@ ALTER TABLE `project_history_edit`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`role_id`);
+
+--
+-- Индексы таблицы `status_date`
+--
+ALTER TABLE `status_date`
+  ADD PRIMARY KEY (`status_date_id`);
 
 --
 -- Индексы таблицы `status_delivery`
@@ -322,6 +352,12 @@ ALTER TABLE `role`
   MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT для таблицы `status_date`
+--
+ALTER TABLE `status_date`
+  MODIFY `status_date_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT для таблицы `status_delivery`
 --
 ALTER TABLE `status_delivery`
@@ -375,7 +411,3 @@ ALTER TABLE `project_access`
 ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
