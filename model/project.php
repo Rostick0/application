@@ -1,7 +1,83 @@
 <?
 
-class Project {
-    public static function getMy($user_id, $limit = 20, $offset = 0) {
+class Project
+{
+    public static function get($status_date, $limit, $offset)
+    {
+        global $db_connect;
+
+        $sql_add = "";
+
+        if ($status_date) {
+            $sql_add = "WHERE `status_date` IN ($status_date)";
+        }
+
+        return $db_connect->query("SELECT * FROM `project` $sql_add ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
+    }
+
+    public static function getCount($status_date)
+    {
+        global $db_connect;
+
+        $sql_add = "";
+
+        if ($status_date) {
+            $sql_add = "WHERE `status_date` IN ($status_date)";
+        }
+
+        return $db_connect->query("SELECT COUNT(*) FROM `project` $sql_add")->fetch_assoc()['COUNT(*)'];
+    }
+
+    public static function search($name, $project_id, $status_date, $limit, $offset)
+    {
+        global $db_connect;
+
+        $sql_add = "";
+
+        if ($status_date) {
+            $sql_add = "AND `project_id` IN (SELECT `project_id` FROM `project` WHERE `status_date` in ($status_date))";
+        }
+
+        $name = !empty($name) ? "'%$name%'" : "NULL";
+        $project_id = !empty($project_id) ? "'%$project_id%'" : "NULL";
+
+        $query = $db_connect->query("SELECT * FROM `project`
+        WHERE `name` LIKE $name $sql_add
+        UNION SELECT * FROM `project`
+        WHERE `project_id` LIKE $project_id $sql_add ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
+
+        return $query;
+    }
+
+    public static function searchCount($name, $project_id, $status_date)
+    {
+        global $db_connect;
+
+        $sql_add = "";
+
+        if ($status_date) {
+            $sql_add = "AND `project_id` IN (SELECT `project_id` FROM `project` WHERE `status_date` in ($status_date))";
+        }
+
+        $name = !empty($name) ? "'%$name%'" : "NULL";
+        $project_id = !empty($project_id) ? "'%$project_id%'" : "NULL";
+
+        $query = $db_connect->query("SELECT COUNT(*) FROM
+        (
+            SELECT * FROM `project`
+            WHERE `name` LIKE $name $sql_add
+            UNION
+            SELECT * FROM `project`
+            WHERE `project_id` LIKE $project_id $sql_add
+        )
+        
+        `counter`");
+
+        return $query->fetch_assoc()["COUNT(*)"];
+    }
+
+    public static function getMy($user_id, $limit = 20, $offset = 0)
+    {
         global $db_connect;
 
         $query = $db_connect->query("SELECT * FROM `project` WHERE `project_id` IN (SELECT `project_id` FROM `project_access` WHERE `user_id` = '$user_id') ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
@@ -9,7 +85,8 @@ class Project {
         return $query;
     }
 
-    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0, $is_ready = 0) {
+    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0, $is_ready = 0)
+    {
         global $db_connect;
 
         $address = !empty($address) ? "'$address'" : "NULL";
@@ -30,7 +107,8 @@ class Project {
         }
     }
 
-    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0) {
+    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment = null, $complaint = null, $zmo_id, $is_made_order = 0, $document_scan = 0, $documents = 0)
+    {
         global $db_connect;
 
         $address = !empty($address) ? "'$address'" : "NULL";
@@ -49,7 +127,8 @@ class Project {
         return $query;
     }
 
-    public static function setReady($project_id, $is_ready) {
+    public static function setReady($project_id, $is_ready)
+    {
         global $db_connect;
 
         $query = $db_connect->query("UPDATE `project` SET `is_ready` = '$is_ready' WHERE `project_id` = '$project_id'");
@@ -57,7 +136,8 @@ class Project {
         return $query;
     }
 
-    public static function setStatusDate($project_id, $status_date) {
+    public static function setStatusDate($project_id, $status_date)
+    {
         global $db_connect;
 
         $status_date = !empty($status_date) ? "'$status_date'" : "NULL";
@@ -65,7 +145,8 @@ class Project {
         return $db_connect->query("UPDATE `project` SET `status_date` = $status_date WHERE `project_id` = '$project_id'");
     }
 
-    public static function delete($project_id) {
+    public static function delete($project_id)
+    {
         global $db_connect;
 
         $db_connect->query("DELETE FROM `product` WHERE `project_id` = '$project_id'");

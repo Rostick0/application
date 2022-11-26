@@ -21,7 +21,7 @@ class ProjectHistoryEdit {
             $sql_add = "WHERE `project_id` IN (SELECT `project_id` FROM `project` WHERE `status_date` in ($status_date))";
         }
 
-        return $db_connect->query("SELECT * FROM `project_history_edit` $sql_add ORDER BY `project_history_edit_id` LIMIT $limit OFFSET $offset");
+        return $db_connect->query("SELECT * FROM `project_history_edit` $sql_add ORDER BY `project_history_edit_id` DESC LIMIT $limit OFFSET $offset");
     }
 
     public static function getCount($status_date) {

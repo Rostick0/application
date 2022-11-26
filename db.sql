@@ -112,8 +112,6 @@ INSERT INTO `role` (`role_id`, `name`, `power`) VALUES
 (2, 'manager', 10),
 (3, 'director', 25);
 
--- --------------------------------------------------------
-
 --
 -- Структура таблицы `status_date`
 --
@@ -227,10 +225,6 @@ CREATE TABLE `zmo` (
 INSERT INTO `zmo` (`zmo_id`, `name`) VALUES
 (1, 'прямой'),
 (2, '44-ФЗ');
-
---
--- Индексы сохранённых таблиц
---
 
 --
 -- Индексы таблицы `authorization`
