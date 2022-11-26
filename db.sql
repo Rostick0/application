@@ -23,6 +23,7 @@ CREATE TABLE `product` (
   `product_id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `track_number` varchar(255) DEFAULT NULL,
+  `warehouse` varchar(255) DEFAULT NULL,
   `address_from` varchar(255) DEFAULT NULL,
   `address_to` varchar(255) DEFAULT NULL,
   `count` float DEFAULT NULL,
@@ -39,8 +40,6 @@ CREATE TABLE `product` (
   `status_exploitation` int(11) NOT NULL DEFAULT '1',
   `project_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
 
 --
 -- Структура таблицы `project`
@@ -211,7 +210,6 @@ CREATE TABLE `user` (
   `last_online` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `role_id` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
 --
 -- Структура таблицы `zmo`
