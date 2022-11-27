@@ -5,7 +5,7 @@
     if (!projectName || !projectInn) return;
 
     const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party";
-    // const token = "";
+    const token = "e46a32a8c6e9fb20b9342e0047f1374cb2c4afce";
 
     const options = {
         method: "POST",
