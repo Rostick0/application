@@ -22,17 +22,17 @@ class ProjectController {
         $limit = (int) $limit;
         $offset = (int) $offset;
 
-        if ($type == 'count') {
-            return Project::searchCount($name, $project_id, $is_ready, $status_date);
-        }
+        if ($type == 'count') return Project::searchCount($name, $project_id, $is_ready, $status_date);
 
         return Project::search($name, $project_id, $status_date, $is_ready, $limit, $offset);
     }
 
-    public static function getMy($limit, $offset) {
+    public static function getMy($limit, $offset, $type = null) {
         $user_id = (int) $_SESSION['user']['user_id'];
         $limit = (int) $limit;
         $offset = (int) $offset;
+
+        if ($type == 'count') Project::getMyCount($user_id);
 
         return Project::getMy($user_id, $limit, $offset);
     }

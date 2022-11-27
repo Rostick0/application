@@ -12,30 +12,32 @@ class ProjectHistoryEditController {
         ProjectHistoryEdit::create($name, $old, $new, $type, $project_id, $user_id);
     }
 
-    public static function get($status_date, $limit, $offset, $type = null) {
+    public static function get($status_date, $is_ready, $limit, $offset, $type = null) {
         $status_date = implode(', ', DbQuery::setIntInArray($status_date));
+        $is_ready = $is_ready ? 1 : null;
         $limit = (int) $limit;
         $offset = (int) $offset;
         
         if ($type == 'count') {
-            return ProjectHistoryEdit::getCount($status_date);
+            return ProjectHistoryEdit::getCount($status_date, $is_ready);
         }
 
-        return ProjectHistoryEdit::get($status_date, $limit, $offset);
+        return ProjectHistoryEdit::get($status_date, $is_ready, $limit, $offset);
     }
 
-    public static function search($name, $project_id, $status_date, $limit, $offset, $type = null) {
+    public static function search($name, $project_id, $status_date, $is_ready, $limit, $offset, $type = null) {
         $name = DbQuery::protectedData($name);
         $project_id = (int) $project_id;
         $status_date = implode(', ', DbQuery::setIntInArray($status_date));
+        $is_ready = $is_ready ? 1 : null;
         $limit = (int) $limit;
         $offset = (int) $offset;
 
         if ($type == 'count') {
-            return ProjectHistoryEdit::searchCount($name, $project_id, $status_date);
+            return ProjectHistoryEdit::searchCount($name, $project_id, $status_date, $is_ready);
         }
 
-        return ProjectHistoryEdit::search($name, $project_id, $status_date, $limit, $offset);
+        return ProjectHistoryEdit::search($name, $project_id, $status_date, $is_ready, $limit, $offset);
     }
 }
 

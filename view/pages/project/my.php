@@ -7,10 +7,10 @@ $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 $page_offset = ($page - 1) * 20;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
-$project_count = DbQuery::getCount('project');
+$project_count = ProjectController::getMy(null, null, 'count');
 $page_count = ceil($project_count / 20);
 
-$project_list = ProjectController::getMy($limit, $page_offset);
+$project_list = ProjectController::getMy(20, $page_offset);
 
 ?>
 

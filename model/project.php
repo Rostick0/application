@@ -6,18 +6,16 @@ class Project
     {
         global $db_connect;
 
-        $sql_add = "";
+        $sql_add = "WHERE";
 
-        if ($status_date) {
-            $sql_add = "WHERE `status_date` IN ($status_date)";
-        }
+        if ($status_date) $sql_add .= " `status_date` IN ($status_date) AND";
 
-        if ($sql_add) {
-            if ($is_ready) {
-                $sql_add = " AND `is_ready` = '$is_ready'";
-            }
+        if ($is_ready) $sql_add .= "`is_ready` = '$is_ready' AND";
+
+        if ($sql_add != "WHERE") {
+            $sql_add = substr($sql_add, 0, -4);
         } else {
-            $sql_add = "WHERE `is_ready` = '$is_ready'";
+            $sql_add = "";
         }
 
         return $db_connect->query("SELECT * FROM `project` $sql_add ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
@@ -27,18 +25,16 @@ class Project
     {
         global $db_connect;
 
-        $sql_add = "";
+        $sql_add = "WHERE";
 
-        if ($status_date) {
-            $sql_add = "WHERE `status_date` IN ($status_date)";
-        }
+        if ($status_date) $sql_add .= " `status_date` IN ($status_date) AND";
 
-        if ($sql_add) {
-            if ($is_ready) {
-                $sql_add = " AND `is_ready` = '$is_ready'";
-            }
+        if ($is_ready) $sql_add .= " `is_ready` = '$is_ready' AND";
+
+        if ($sql_add != "WHERE") {
+            $sql_add = substr($sql_add, 0, -4);
         } else {
-            $sql_add = "WHERE `is_ready` = '$is_ready'";
+            $sql_add = "";
         }
 
         return $db_connect->query("SELECT COUNT(*) FROM `project` $sql_add")->fetch_assoc()['COUNT(*)'];
@@ -50,13 +46,9 @@ class Project
 
         $sql_add = "";
 
-        if ($status_date) {
-            $sql_add = "AND `project_id` IN (SELECT `project_id` FROM `project` WHERE `status_date` in ($status_date))";
-        }
+        if ($status_date) $sql_add = "AND `project_id` IN (SELECT `project_id` FROM `project` WHERE `status_date` in ($status_date))";
 
-        if ($is_ready) {
-            $sql_add .= " AND `is_ready` = '$is_ready'";
-        }
+        if ($is_ready) $sql_add .= " AND `is_ready` = '$is_ready'";
 
         $name = !empty($name) ? "'%$name%'" : "NULL";
         $project_id = !empty($project_id) ? "'%$project_id%'" : "NULL";
@@ -72,8 +64,6 @@ class Project
     public static function searchCount($name, $project_id, $is_ready, $status_date)
     {
         global $db_connect;
-
-        var_dump($is_ready);
 
         $sql_add = "";
 
@@ -107,6 +97,14 @@ class Project
         global $db_connect;
 
         $query = $db_connect->query("SELECT * FROM `project` WHERE `project_id` IN (SELECT `project_id` FROM `project_access` WHERE `user_id` = '$user_id') ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
+
+        return $query;
+    }
+
+    public static function getMyCount($user_id) {
+        global $db_connect;
+
+        $query = $db_connect->query("SELECT COUNT(*) FROM `project` WHERE `project_id` IN (SELECT `project_id` FROM `project_access` WHERE `user_id` = '$user_id')")->fetch_assoc()["COUNT(*)"];
 
         return $query;
     }
