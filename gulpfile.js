@@ -18,7 +18,7 @@ function scss() {
 }
 
 function js() {
-    return src(['gulp/js/vars.js', 'gulp/js/functions.js', 'gulp/js/UI.js', 'gulp/js/create.js'])
+    return src(['gulp/js/vars.js', 'gulp/js/functions.js', 'gulp/js/UI.js', 'gulp/js/create.js', 'gulp/js/inn.js'])
         .pipe(babel({
             presets: ['@babel/env']
         }))

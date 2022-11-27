@@ -79,6 +79,15 @@ if ($search) {
                                         </a>
                                     </strong>
                                 </p>
+                                <? 
+                                    $project_name = DbQuery::parse('project', 'project_id', $project['project_id'], 'name');
+
+                                    if ($project_name):
+                                ?>
+                                    <p>
+                                        <?= $project_name ?>
+                                    </p>
+                                <? endif ?>
                                 <p>
                                     <?= $project['created_date'] ?>
                                 </p>

@@ -1,7 +1,6 @@
 <?
 
-class ProjectController
-{
+class ProjectController {
     public static function get($status_date, $limit, $offset, $type = null) {
         $status_date = implode(', ', DbQuery::setIntInArray($status_date));
         $limit = (int) $limit;
@@ -28,8 +27,7 @@ class ProjectController
         return Project::search($name, $project_id, $status_date, $limit, $offset);
     }
 
-    public static function getMy($limit, $offset)
-    {
+    public static function getMy($limit, $offset) {
         $user_id = (int) $_SESSION['user']['user_id'];
         $limit = (int) $limit;
         $offset = (int) $offset;
@@ -37,8 +35,7 @@ class ProjectController
         return Project::getMy($user_id, $limit, $offset);
     }
 
-    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $is_ready = 0, $products)
-    {
+    public static function create($name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $is_ready = 0, $products) {
         $name = DbQuery::protectedData($name);
         $contract = DbQuery::protectedData($contract);
         $address = DbQuery::protectedData($address);
@@ -67,32 +64,14 @@ class ProjectController
         ProjectAccessController::create($project_id, json_encode(['all']), $_SESSION['user']['user_id']);
         ProjectHistoryEditController::create('Создал проект ' . $project_id, null, null, 'create', $project_id, $_SESSION['user']['user_id']);
 
-        if ($delivery_date) {
-            ProjectController::setStatusDate($project_id, $delivery_date, $is_ready);
-        }
+        if ($delivery_date) ProjectController::setStatusDate($project_id, $delivery_date, $is_ready);
 
-        if (!is_array($products[0])) return;
+        ProductController::addProducts($project_id, $products);
 
-        for ($i = 0; $i < count($products[0]); $i++) {
-            $doc_file = [
-                'name' => $products[13]['name'][$i],
-                'type' => $products[13]['type'][$i],
-                'tmp_name' => $products[13]['tmp_name'][$i],
-                'error' => $products[13]['error'][$i],
-                'size' => $products[13]['size'][$i],
-            ];
-
-            $doc = DocumentController::upload($doc_file);
-
-            ProductController::create($products[0][$i], $products[1][$i], $products[2][$i], $products[3][$i], $products[4][$i], $products[5][$i], $products[6][$i], $products[7][$i], $products[8][$i], $products[9][$i], $products[10][$i], $products[11][$i], $products[12][$i], $doc, $products[14][$i], $products[15][$i], $products[16][$i], $project_id);
-            ProjectHistoryEditController::create('Добавил товар ' . $products[0][$i], null, null, 'add', $project_id, $_SESSION['user']['user_id']);
-        }
-
-        header('Refresh: 0');
+        header("Location: /project?id=$project_id");
     }
 
-    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $products, $access_array)
-    {
+    public static function edit($project_id, $name, $contract, $address, $inn, $start_date, $end_date, $delivery_date, $comment, $complaint, $zmo_id, $is_made_order, $document_scan, $documents, $products, $access_array) {
         $project_id = (int) $project_id;
         $name = DbQuery::protectedData($name);
         $contract = DbQuery::protectedData($contract);
@@ -137,7 +116,7 @@ class ProjectController
                 }
             }
 
-            if (!ProjectController::checkEdited($project_old[$type], $data_type[$type])) {
+            if (!checkEdited($project_old[$type], $data_type[$type])) {
                 $action_edit[] = [
                     'name' => $type,
                     'old' => DbQuery::protectedData($project_old[$type]),
@@ -154,9 +133,7 @@ class ProjectController
 
         if (!$query) return "Ошибка при изменении данных";
 
-        if ($data_type['delivery_date'] == $delivery_date) {
-            ProjectController::setStatusDate($project_id, $data_type['delivery_date'], $data_type['is_ready']);
-        }
+        if ($data_type['delivery_date'] == $delivery_date) ProjectController::setStatusDate($project_id, $data_type['delivery_date'], $data_type['is_ready']);
 
         if (count($action_edit) > 1) {
             foreach ($action_edit as $action) {
@@ -164,128 +141,12 @@ class ProjectController
             }
         }
 
-        if (is_array($products[0])) {
-            for ($i = 0; $i < count($products[0]); $i++) {
-                $product_old = DbQuery::get('product', 'product_id', $products[17][$i])->fetch_assoc();
-                $product_new = $product_old;
+        ProductController::addOrEditProducts($project_id, $products);
 
-                if ($product_old) {
-                    if (!ProjectController::checkEdited($product_old['name'], $products[0][$i])) {
-                        $product_new['name'] = $products[0][$i];
-                        ProjectHistoryEditController::create('Изменил поле name', $product_old['name'], $products[0][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['track_number'], $products[1][$i])) {
-                        $product_new['track_number'] = $products[1][$i];
-                        ProjectHistoryEditController::create('Изменил поле track_number', $product_old['track_number'], $products[1][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['warehouse'], $products[2][$i])) {
-                        $product_new['warehouse'] = $products[2][$i];
-                        ProjectHistoryEditController::create('Изменил поле warehouse', $product_old['warehouse'], $products[2][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['address_from'], $products[3][$i])) {
-                        $product_new['address_from'] = $products[3][$i];
-                        ProjectHistoryEditController::create('Изменил поле address_from', $product_old['address_from'], $products[3][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['address_to'], $products[4][$i])) {
-                        $product_new['address_to'] = $products[4][$i];
-                        ProjectHistoryEditController::create('Изменил поле address_to', $product_old['address_to'], $products[4][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['count'], $products[5][$i])) {
-                        $product_new['count'] = $products[5][$i];
-                        ProjectHistoryEditController::create('Изменил поле count', $product_old['count'], $products[5][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['unit_measurement'], $products[6][$i])) {
-                        $product_new['unit_measurement'] = $products[6][$i];
-                        ProjectHistoryEditController::create('Изменил поле unit_measurement', $product_old['unit_measurement'], $products[6][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['price'], $products[7][$i])) {
-                        $product_new['price'] = $products[7][$i];
-                        ProjectHistoryEditController::create('Изменил поле price', $product_old['price'], $products[7][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['amount'], $products[8][$i])) {
-                        $product_new['amount'] = $products[8][$i];
-                        ProjectHistoryEditController::create('Изменил поле amount', $product_old['amount'], $products[8][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['purchase_price'], $products[9][$i])) {
-                        $product_new['purchase_price'] = $products[9][$i];
-                        ProjectHistoryEditController::create('Изменил поле purchase_price', $product_old['purchase_price'], $products[9][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['purchase_amount'], $products[10][$i])) {
-                        $product_new['purchase_amount'] = $products[10][$i];
-                        ProjectHistoryEditController::create('Изменил поле purchase_amount', $product_old['purchase_amount'], $products[10][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['status_delivery'], $products[11][$i])) {
-                        $product_new['status_delivery'] = $products[11][$i];
-                        ProjectHistoryEditController::create('Изменил поле status_delivery', $product_old['status_delivery'], $products[11][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['status_payment'], $products[12][$i])) {
-                        $product_new['status_payment'] = $products[12][$i];
-                        ProjectHistoryEditController::create('Изменил поле status_payment', $product_old['status_payment'], $products[12][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['document'], $products[13][$i])) {
-                        $doc_file = [
-                            'name' => $products[13]['name'][$i],
-                            'type' => $products[13]['type'][$i],
-                            'tmp_name' => $products[13]['tmp_name'][$i],
-                            'error' => $products[13]['error'][$i],
-                            'size' => $products[13]['size'][$i],
-                        ];
-
-                        $product_new['document'] = DocumentController::update($doc_file, $product_old['document']);
-                        ProjectHistoryEditController::create('Изменил поле document', $product_old['document'], $products[13][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['link'], $products[14][$i])) {
-                        $product_new['link'] = $products[14][$i];
-                        ProjectHistoryEditController::create('Изменил поле link', $product_old['link'], $products[14][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['shipping_cost'], $products[15][$i])) {
-                        $product_new['shipping_cost'] = $products[15][$i];
-                        ProjectHistoryEditController::create('Изменил поле shipping_cost', $product_old['status_payment'], $products[15][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    if (!ProjectController::checkEdited($product_old['status_exploitation'], $products[16][$i])) {
-                        $product_new['status_exploitation'] = $products[16][$i];
-                        ProjectHistoryEditController::create('Изменил поле status_exploitation', $product_old['status_exploitation'], $products[16][$i], 'edit', $project_id, $_SESSION['user']['user_id']);
-                    }
-
-                    ProductController::update($product_new['product_id'], $product_new['name'], $product_new['track_number'], $product_new['warehouse'], $product_new['address_from'], $product_new['address_to'], $product_new['count'], $product_new['unit_measurement'], $product_new['price'], $product_new['amount'], $product_new['purchase_price'], $product_new['purchase_amount'], $product_new['status_delivery'], $product_new['status_payment'], $product_new['document'], $product_new['link'], $product_new['shipping_cost'], $product_new['status_exploitation']);
-
-                    continue;
-                }
-
-                $doc_file = [
-                    'name' => $products[13]['name'][$i],
-                    'type' => $products[13]['type'][$i],
-                    'tmp_name' => $products[13]['tmp_name'][$i],
-                    'error' => $products[13]['error'][$i],
-                    'size' => $products[13]['size'][$i],
-                ];
-
-                ProductController::create($products[0][$i], $products[1][$i], $products[2][$i], $products[3][$i], $products[4][$i], $products[5][$i], $products[6][$i], $products[7][$i], $products[8][$i], $products[9][$i], $products[10][$i], $products[11][$i], $products[12][$i], $doc_file, $products[14][$i], $products[15][$i], $products[16][$i], $project_id);
-                ProjectHistoryEditController::create('Добавил товар ' . $products[0][$i], null, null, 'add', $project_id, $_SESSION['user']['user_id']);
-            }
-        }
-
-        // header('Refresh: 0');
+        header('Refresh: 0');
     }
 
-    public static function setReady($project_id, $is_ready)
-    {
+    public static function setReady($project_id, $is_ready) {
         $project_id = (int) $project_id;
         $is_ready = $is_ready ? 1 : 0;
 
@@ -305,15 +166,7 @@ class ProjectController
         Project::setReady($project_id, $is_ready);
     }
 
-    public static function checkEdited($old, $new)
-    {
-        if (is_null($old) && is_null($new)) return false;
-
-        return $old == $new;
-    }
-
-    public static function setStatusDate($project_id, $date_delivery, $is_ready)
-    {
+    public static function setStatusDate($project_id, $date_delivery, $is_ready) {
         if ($is_ready) return;
 
         if (!$date_delivery) return;
@@ -332,8 +185,7 @@ class ProjectController
         Project::setStatusDate($project_id, $status_date);
     }
 
-    public static function checkDate($start_date, $is_ready)
-    {
+    public static function checkDate($start_date, $is_ready) {
         if ($is_ready) return 'green lighten-3';
 
         if (!$start_date) return;
@@ -354,8 +206,7 @@ class ProjectController
         if ($delivery_status == 3) return 'red lighten-3';
     }
 
-    public static function delete($project_id, $access_array)
-    {
+    public static function delete($project_id, $access_array) {
         $project_id = (int) $project_id;
 
         $user_power = (int) DbQuery::parse('role', 'role_id', $_SESSION['user']['role_id'], 'power');
