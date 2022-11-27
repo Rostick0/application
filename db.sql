@@ -47,10 +47,10 @@ CREATE TABLE `product` (
 
 CREATE TABLE `project` (
   `project_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `contract` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
-  `inn` varchar(255) NOT NULL,
+  `inn` varchar(255) DEFAULT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,

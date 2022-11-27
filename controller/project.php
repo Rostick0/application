@@ -1,30 +1,32 @@
 <?
 
 class ProjectController {
-    public static function get($status_date, $limit, $offset, $type = null) {
+    public static function get($status_date, $is_ready, $limit, $offset, $type = null) {
         $status_date = implode(', ', DbQuery::setIntInArray($status_date));
+        $is_ready = $is_ready ? 1 : null;
         $limit = (int) $limit;
         $offset = (int) $offset;
         
         if ($type == 'count') {
-            return Project::getCount($status_date);
+            return Project::getCount($status_date, $is_ready);
         }
 
-        return Project::get($status_date, $limit, $offset);
+        return Project::get($status_date, $is_ready, $limit, $offset);
     }
 
-    public static function search($name, $project_id, $status_date, $limit, $offset, $type = null) {
+    public static function search($name, $project_id, $status_date, $is_ready, $limit, $offset, $type = null) {
         $name = DbQuery::protectedData($name);
         $project_id = (int) $project_id;
         $status_date = implode(', ', DbQuery::setIntInArray($status_date));
+        $is_ready = $is_ready ? 1 : null;
         $limit = (int) $limit;
         $offset = (int) $offset;
 
         if ($type == 'count') {
-            return Project::searchCount($name, $project_id, $status_date);
+            return Project::searchCount($name, $project_id, $is_ready, $status_date);
         }
 
-        return Project::search($name, $project_id, $status_date, $limit, $offset);
+        return Project::search($name, $project_id, $status_date, $is_ready, $limit, $offset);
     }
 
     public static function getMy($limit, $offset) {
@@ -49,10 +51,6 @@ class ProjectController {
         $is_made_order = $is_made_order ? 1 : 0;
         $document_scan = $document_scan ? 1 : 0;
         $is_ready = $is_ready ? 1 : 0;
-
-        if (strlen($name) < 3) return "Название компании меньше 3 символов";
-
-        if (!$inn) return "Отсуствует ИНН";
 
         $user_role = DbQuery::parse('user', 'user_id', $_SESSION['user']['user_id'], 'role_id');
 
@@ -124,10 +122,6 @@ class ProjectController {
                 ];
             }
         }
-
-        if (strlen($data_type['name']) < 3) return "Название компании меньше 3 символов";
-
-        if (!$data_type['inn']) return "Отсуствует ИНН";
 
         $query = Project::edit($project_id, $data_type['name'], $data_type['contract'], $data_type['address'], $data_type['inn'], $data_type['start_date'], $data_type['end_date'], $data_type['delivery_date'], $data_type['comment'], $data_type['complaint'], $data_type['zmo_id'], $data_type['is_made_order'], $data_type['document_scan'], $data_type['documents']);
 

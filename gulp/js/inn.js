@@ -21,6 +21,8 @@
     }
 
     projectInn.oninput = throttle(() => {
+        console.log(options)
+
         fetch(url, options)
             .then(response => response.json())
             .then(result => {

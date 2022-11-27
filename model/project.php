@@ -2,7 +2,7 @@
 
 class Project
 {
-    public static function get($status_date, $limit, $offset)
+    public static function get($status_date, $is_ready, $limit, $offset)
     {
         global $db_connect;
 
@@ -10,12 +10,20 @@ class Project
 
         if ($status_date) {
             $sql_add = "WHERE `status_date` IN ($status_date)";
+        }
+
+        if ($sql_add) {
+            if ($is_ready) {
+                $sql_add = " AND `is_ready` = '$is_ready'";
+            }
+        } else {
+            $sql_add = "WHERE `is_ready` = '$is_ready'";
         }
 
         return $db_connect->query("SELECT * FROM `project` $sql_add ORDER BY `project_id` DESC LIMIT $limit OFFSET $offset");
     }
 
-    public static function getCount($status_date)
+    public static function getCount($status_date, $is_ready)
     {
         global $db_connect;
 
@@ -25,10 +33,18 @@ class Project
             $sql_add = "WHERE `status_date` IN ($status_date)";
         }
 
+        if ($sql_add) {
+            if ($is_ready) {
+                $sql_add = " AND `is_ready` = '$is_ready'";
+            }
+        } else {
+            $sql_add = "WHERE `is_ready` = '$is_ready'";
+        }
+
         return $db_connect->query("SELECT COUNT(*) FROM `project` $sql_add")->fetch_assoc()['COUNT(*)'];
     }
 
-    public static function search($name, $project_id, $status_date, $limit, $offset)
+    public static function search($name, $project_id, $status_date, $is_ready, $limit, $offset)
     {
         global $db_connect;
 
@@ -36,6 +52,10 @@ class Project
 
         if ($status_date) {
             $sql_add = "AND `project_id` IN (SELECT `project_id` FROM `project` WHERE `status_date` in ($status_date))";
+        }
+
+        if ($is_ready) {
+            $sql_add .= " AND `is_ready` = '$is_ready'";
         }
 
         $name = !empty($name) ? "'%$name%'" : "NULL";
@@ -49,14 +69,20 @@ class Project
         return $query;
     }
 
-    public static function searchCount($name, $project_id, $status_date)
+    public static function searchCount($name, $project_id, $is_ready, $status_date)
     {
         global $db_connect;
+
+        var_dump($is_ready);
 
         $sql_add = "";
 
         if ($status_date) {
             $sql_add = "AND `project_id` IN (SELECT `project_id` FROM `project` WHERE `status_date` in ($status_date))";
+        }
+
+        if ($is_ready) {
+            $sql_add .= " AND `is_ready` = '$is_ready'";
         }
 
         $name = !empty($name) ? "'%$name%'" : "NULL";
@@ -89,8 +115,10 @@ class Project
     {
         global $db_connect;
 
+        $name = !empty($name) ? "'$name'" : "NULL";
         $address = !empty($address) ? "'$address'" : "NULL";
         $contract = !empty($contract) ? "'$contract'" : "NULL";
+        $inn = !empty($inn) ? "'$inn'" : "NULL";
         $start_date = !empty($start_date) ? "'$start_date'" : "NULL";
         $end_date = !empty($end_date) ? "'$end_date'" : "NULL";
         $delivery_date = !empty($delivery_date) ? "'$delivery_date'" : "NULL";
@@ -100,7 +128,7 @@ class Project
         $query = $db_connect->query("INSERT INTO
             `project` (`name`, `contract`, `address`, `inn`, `start_date`, `end_date`, `delivery_date`, `comment`, `complaint`, `zmo_id`, `is_made_order`, `document_scan`, `documents`, `is_ready`)
                 VALUES
-            ('$name',$contract,$address,'$inn',$start_date,$end_date,$delivery_date,$comment,$complaint,'$zmo_id','$is_made_order', '$document_scan','$documents','$is_ready')");
+            ($name,$contract,$address,$inn,$start_date,$end_date,$delivery_date,$comment,$complaint,'$zmo_id','$is_made_order', '$document_scan','$documents','$is_ready')");
 
         if ($query) {
             return mysqli_insert_id($db_connect);
@@ -111,8 +139,10 @@ class Project
     {
         global $db_connect;
 
+        $name = !empty($name) ? "'$name'" : "NULL";
         $address = !empty($address) ? "'$address'" : "NULL";
         $contract = !empty($contract) ? "'$contract'" : "NULL";
+        $inn = !empty($inn) ? "'$inn'" : "NULL";
         $start_date = !empty($start_date) ? "'$start_date'" : "NULL";
         $end_date = !empty($end_date) ? "'$end_date'" : "NULL";
         $delivery_date = !empty($delivery_date) ? "'$delivery_date'" : "NULL";
@@ -121,7 +151,7 @@ class Project
 
         $query = $db_connect->query("UPDATE `project`
         SET
-        `name`='$name',`contract`=$contract,`address`=$address,`inn`='$inn',`start_date`=$start_date,`end_date`=$end_date,`delivery_date`=$delivery_date,`comment`=$comment,`complaint`=$complaint,`is_made_order`='$is_made_order',`zmo_id`='$zmo_id',`document_scan`='$document_scan',`documents`='$documents'
+        `name`=$name,`contract`=$contract,`address`=$address,`inn`=$inn,`start_date`=$start_date,`end_date`=$end_date,`delivery_date`=$delivery_date,`comment`=$comment,`complaint`=$complaint,`is_made_order`='$is_made_order',`zmo_id`='$zmo_id',`document_scan`='$document_scan',`documents`='$documents'
         WHERE `project_id` = '$project_id'");
 
         return $query;
