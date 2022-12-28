@@ -32,7 +32,7 @@ class ProjectController {
         $limit = (int) $limit;
         $offset = (int) $offset;
 
-        if ($type == 'count') Project::getMyCount($user_id);
+        if ($type == 'count') return Project::getMyCount($user_id);
 
         return Project::getMy($user_id, $limit, $offset);
     }

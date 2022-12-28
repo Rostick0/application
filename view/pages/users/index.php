@@ -10,15 +10,15 @@ $page_offset = ($page - 1) * 10;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
 $project_count = DbQuery::get('user')->num_rows;
-$page_count = ceil($project_count / 20);
+$page_count = ceil($project_count / 10);
 
 $user_search = DbQuery::protectedData($_REQUEST['user_search']);
 $user_FCs = $_REQUEST['user_FCs'];
 
 if ($user_FCs) {
-    $user_list = UserController::search($user_FCs, 20, $page_offset);
+    $user_list = UserController::search($user_FCs, 10, $page_offset);
 } else {
-    $user_list = DbQuery::getDesc('user', 'user_id', 20, $page_offset);
+    $user_list = DbQuery::getDesc('user', 'user_id', 10, $page_offset);
 }
 
 ?>
@@ -78,7 +78,6 @@ if ($user_FCs) {
 
                 $project_count;
                 $page_count;
-                $project_query_add = "&project_id=$project_id";
                 require_once './view/components/pagination.php';
                 ?>
             </div>

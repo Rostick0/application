@@ -4,7 +4,7 @@ $page = $_GET['page'];
 $page = $page ? $page : 1;
 $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 
-$page_offset = ($page - 1) * 20;
+$page_offset = ($page - 1) * 10;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
 $search = $_GET['project_history_search'];
@@ -17,15 +17,15 @@ $is_ready = $_REQUEST['is_ready'];
 
 if ($search) {
     $project_count = ProjectHistoryEditController::search($search, $search, $history_status_date, $is_ready, null, null, 'count');
-    $page_count = ceil($project_count / 20);
+    $page_count = ceil($project_count / 10);
 
-    $project_list = ProjectHistoryEditController::search($search, $search, $history_status_date, $is_ready, 20, $page_offset);
+    $project_list = ProjectHistoryEditController::search($search, $search, $history_status_date, $is_ready, 10, $page_offset);
     
 } else {
     $project_count = ProjectHistoryEditController::get($history_status_date, $is_ready, null, null, 'count');
-    $page_count = ceil($project_count / 20);
+    $page_count = ceil($project_count / 10);
     
-    $project_list = ProjectHistoryEditController::get($history_status_date, $is_ready, 20, $page_offset);
+    $project_list = ProjectHistoryEditController::get($history_status_date, $is_ready, 10, $page_offset);
 }
 
 ?>

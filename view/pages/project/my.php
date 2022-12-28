@@ -4,13 +4,13 @@ $page = (int) $_GET['page'];
 $page = $page ? $page : 1;
 $page = $_GET['page'] < 1 ? $_GET['page'] = 1 : $_GET['page'];
 
-$page_offset = ($page - 1) * 20;
+$page_offset = ($page - 1) * 10;
 $page_ceil = ceil($page / 10) * 10 - 9;
 
 $project_count = ProjectController::getMy(null, null, 'count');
-$page_count = ceil($project_count / 20);
+$page_count = ceil($project_count / 10);
 
-$project_list = ProjectController::getMy(20, $page_offset);
+$project_list = ProjectController::getMy(10, $page_offset);
 
 ?>
 

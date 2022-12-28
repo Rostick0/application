@@ -39,11 +39,17 @@ switch ($URI) {
     case '/history':
         $path_page .= '/history/index.php';
         break;
-    // case '/profile':
-    //     $path_page .= '/profile/profile.php';
-    //     break;
-    // case '/admin':
-    //     $path_page .= '/admin/index.php';
+    case '/users':
+        $path_page .= '/users/index.php';
+        break;
+    case '/users/edit':
+        $path_page .= '/users/edit.php';
+        break;
+        // case '/profile':
+        //     $path_page .= '/profile/profile.php';
+        //     break;
+        // case '/admin':
+        //     $path_page .= '/admin/index.php';
         break;
     default:
         $path_page .= '/404.php';
@@ -83,5 +89,3 @@ if (!file_exists($path_page)) {
 }
 
 require_once $path_page;
-
-?>
